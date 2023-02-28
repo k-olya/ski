@@ -1,6 +1,8 @@
 # react-three/fiber + redux + typescript 
 
-Create amazing 3d web apps and games with this
+Create amazing 3d web apps and games with this.
+
+Also includes [tailwind](https://tailwindcss.com) and a tiny math/transition library.
 
 ## scripts
 
