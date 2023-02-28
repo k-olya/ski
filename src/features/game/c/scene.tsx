@@ -23,8 +23,8 @@ export const Scene = () => {
       <ambientLight intensity={0.5} />
       <pointLight position={[5, 2, 5]} intensity={1.2} />
       <RoundedBox
-        position={[0, 0, -3]}
-        rotation={[-1, 0, 0]}
+        position={[0, 0, -2]}
+        rotation={[0.5, -0.95, -1.64]}
         radius={0.05}
         onPointerOver={(event) => setHover(true)}
         onPointerOut={(event) => setHover(false)}
