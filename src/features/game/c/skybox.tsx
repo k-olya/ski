@@ -1,13 +1,16 @@
 import { Plane, useTexture } from "@react-three/drei";
 
+const NAME = "alt";
+const EXT = "jpg";
+
 export const Skybox = () => {
   const [bk, dn, ft, lf, rt, up] = useTexture([
-    "/alt_bk.jpg",
-    "/alt_dn.jpg",
-    "/alt_ft.jpg",
-    "/alt_lf.jpg",
-    "/alt_rt.jpg",
-    "/alt_up.jpg",
+    `/${NAME}_bk.${EXT}`,
+    `/${NAME}_dn.${EXT}`,
+    `/${NAME}_ft.${EXT}`,
+    `/${NAME}_lf.${EXT}`,
+    `/${NAME}_rt.${EXT}`,
+    `/${NAME}_up.${EXT}`,
   ]);
   return (
     <group scale={[100, 100, 100]}>
