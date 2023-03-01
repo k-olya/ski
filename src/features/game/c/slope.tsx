@@ -10,16 +10,16 @@ export const Slope = () => <group name="slope" rotation={[- SLOPE_ANGLE, 0, 0]}>
         <meshPhongMaterial color="white" />
       </Box>
       <Box
-        position={[-3.5, -1, PLAYER_POSITION]}
-        scale={[3, 1, SLOPE_LENGTH]}
-        rotation={[0, 0, - PI / 4]}
+        position={[-4, -1, PLAYER_POSITION]}
+        scale={[8, 1, SLOPE_LENGTH]}
+        rotation={[0, 0, - PI / 6]}
       >
         <meshPhongMaterial color="white" />
       </Box>
       <Box
-        position={[3.5, -1, PLAYER_POSITION]}
-        scale={[3, 1, SLOPE_LENGTH]}
-        rotation={[0, 0, PI / 4]}
+        position={[4, -1, PLAYER_POSITION]}
+        scale={[8, 1, SLOPE_LENGTH]}
+        rotation={[0, 0, PI / 6]}
       >
         <meshPhongMaterial color="white" />
       </Box>

@@ -27,8 +27,10 @@ export const Scene = () => {
       <Slope />
       <Skybox />
       {/* <Flag color="crimson" position={[1, -0.26, -2]} text="0" /> */}
-      <Debris position={[4.1, 0.5, 2]} />
-      <Debris position={[-4.2, 0.5, 2]} />
+      <Debris position={[5.5, 0.6, 2]} />
+      <Debris position={[6, 1, 2]} />
+      <Debris position={[-5.5, 0.6, 2]} />
+      <Debris position={[-6, 1, 2]} />
       <PointerLockControls selector="canvas" />
     </>
   );
