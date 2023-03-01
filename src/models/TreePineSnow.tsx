@@ -7,6 +7,7 @@ import * as THREE from 'three'
 import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
+import { snow } from "./materials"
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -24,7 +25,7 @@ export function TreePineSnow(props: JSX.IntrinsicElements['group']) {
   return (
     <group {...props} dispose={null}>
       <mesh name="Mesh_treePineSnow" geometry={nodes.Mesh_treePineSnow.geometry} material={materials.dirt} />
-      <mesh name="Mesh_treePineSnow_1" geometry={nodes.Mesh_treePineSnow_1.geometry} material={materials.snow} />
+      <mesh name="Mesh_treePineSnow_1" geometry={nodes.Mesh_treePineSnow_1.geometry} material={snow} />
     </group>
   )
 }

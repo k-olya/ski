@@ -13,7 +13,7 @@ export const Skybox = () => {
     `/${NAME}_up.${EXT}`,
   ]);
   return (
-    <group scale={[100, 100, 100]}>
+    <group scale={[200, 200, 200]}>
       <Plane
         scale={[-2, 2, 2]}
         position={[-1, 0, 0]}

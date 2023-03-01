@@ -35,7 +35,7 @@ TreePine,
 TreePineSnow,
 ]
 
-const DENSITY = 40
+const DENSITY = 100
 
 export const Debris: FC<Props> = ({ position }) => {
   const debris = range(DENSITY).map(x => irand(models.length));
@@ -54,6 +54,6 @@ export const Debris: FC<Props> = ({ position }) => {
   return <group position={position}>{
     debris.map((d, i) =>{
       const C = models[d];
-      return <group key={i} ref={x => ref.current[i] = x} position={[rand(-0.25, 0.25), - i * SLOPE_TAN * SLOPE_LENGTH / DENSITY, - i * SLOPE_LENGTH / DENSITY + rand(-1.4, 1.4)]}><C /></group>
+      return <group key={i} ref={x => ref.current[i] = x} position={[rand(-0.25, 0.25), - i * SLOPE_TAN * SLOPE_LENGTH / DENSITY, - i * SLOPE_LENGTH / DENSITY + rand(-1, 0.8)]}><C /></group>
     })}</group>
 }

@@ -3,7 +3,10 @@ export const PI = Math.PI;
 export const abs = (x: number) => Math.abs(x);
 export const clamp = (x: number, min = 0, max = 1) => x < min ? min : x > max ? max : x;
 export const rad = (deg: number) => (deg / 180) * Math.PI;
-export const range = (x: number) => Array.from(Array(x).keys());
+export const range = (x: number, y?: number) =>
+  typeof y === "number"
+  ? Array.from((Array(y - x).keys())).map(z => z + x)
+  : Array.from(Array(x).keys());
 export const lerp = (a: number, b: number, t: number) => a * (1 - t) + b * t;
 
 
