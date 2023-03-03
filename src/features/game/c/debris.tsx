@@ -6,28 +6,21 @@ import { irand, range } from "app/math";
 import { V, SLOPE_ANGLE, SLOPE_TAN, SLOPE_LENGTH } from "config";
 import { rand } from "app/math";
 
-import { Fox } from "models/Fox"
-import { TreeHolidayPineSnow } from "models/TreeHolidayPineSnow"
-import { TreeHolidayPineSnowRound } from "models/TreeHolidayPineSnowRound"
-import { TreeHolidayPineSnowed } from "models/TreeHolidayPineSnowed"
-import { TreePine } from "models/TreePine"
-import { TreePineSnow } from "models/TreePineSnow"
+import { Fox } from "../models/Fox"
+import { TreeHolidayPine } from "../models/TreeHolidayPine"
+import { TreeHolidayPineSnow } from "../models/TreeHolidayPineSnow"
+import { TreeHolidayPineSnowRound } from "../models/TreeHolidayPineSnowRound"
+import { TreeHolidayPineSnowed } from "../models/TreeHolidayPineSnowed"
+import { TreePine } from "../models/TreePine"
+import { TreePineSnow } from "../models/TreePineSnow"
 
 
 interface Props {
   position: [number, number, number],
 }
 
-interface ModelProps {
-  name: string;
-  offset: [number, number, number];
-  rotation?: [number, number, number];
-}
-
-const Null = () => null
-
 const models = [
-Null,
+TreeHolidayPine,
 TreeHolidayPineSnow,
 TreeHolidayPineSnowRound,
 TreeHolidayPineSnowed,
