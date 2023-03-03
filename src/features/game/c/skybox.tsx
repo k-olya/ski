@@ -36,7 +36,11 @@ export const Skybox = () => {
       <Plane scale={[-2, 2, 2]} position={[0, 0, -1]} rotation={[0, 0, 0]}>
         <meshBasicMaterial map={ft} specularMap={ft} attach="material" />
       </Plane>
-      <Plane scale={[-2, 2, 2]} position={[0, -1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <Plane
+        scale={[-2, 2, 2]}
+        position={[0, -1, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+      >
         <meshBasicMaterial map={dn} specularMap={dn} attach="material" />
       </Plane>
       <group rotation={[0, -Math.PI / 2, 0]}>

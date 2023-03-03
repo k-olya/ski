@@ -1,3 +1,3 @@
-import { MeshPhongMaterial } from "three"
+import { MeshPhongMaterial } from "three";
 
-export const snow = new MeshPhongMaterial({ color: "lightgray" })
+export const snow = new MeshPhongMaterial({ color: "lightgray" });

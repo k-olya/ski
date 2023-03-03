@@ -1,18 +1,18 @@
-import { RootState, useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
-import { clamp, lerp, linear } from 'app/math';
+import { RootState, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import { clamp, lerp, linear } from "app/math";
 
 export const useTransition = (
   x: number,
   duration: number,
   cb: (x: number, three: RootState, delta: number) => void,
-  easing?: (x: number) => number,
+  easing?: (x: number) => number
 ) => {
   const _e = easing || linear;
   const b = useRef(x);
   const a = useRef(x);
   const finished = useRef(false);
-  
+
   const time = useRef(0);
   if (b.current !== x) {
     a.current = b.current;
