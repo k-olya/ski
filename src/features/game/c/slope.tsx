@@ -1,6 +1,6 @@
 import { Box } from "@react-three/drei"
 import { PI } from "app/math"
-import { SLOPE_ANGLE, SLOPE_LENGTH, PLAYER_POSITION } from "config"
+import { BORDER_ANGLE, SLOPE_ANGLE, SLOPE_LENGTH, PLAYER_POSITION } from "config"
 
 export const Slope = () => <group name="slope" rotation={[- SLOPE_ANGLE, 0, 0]}>
       <Box
