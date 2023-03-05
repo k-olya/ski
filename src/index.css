@@ -19,3 +19,52 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
+@keyframes shakeX {
+  from,
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+.shakeX {
+  animation: shakeX 0.3s forwards;
+}
+
+/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */
+
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.15, 1.15, 1.15);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse {
+  animation-name: pulse;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
+  transform-origin: center left;
+}

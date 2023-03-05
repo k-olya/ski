@@ -1,13 +1,26 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { abs, clamp, lerp, sqrt, pow, rand } from "app/math";
+import { abs, clamp, lerp, sqrt, pow, rand, irand } from "app/math";
+import { mapStrings } from "app/strings";
 import { KbState } from "features/kb/slice";
 
-import { A, V, Vx, Vboost, Vslow, CLOCK_DELTA, SLOPE_LENGTH, SLOPE_WIDTH, EXTRA_PLAYER_PADDING } from "config";
-import { add } from "config/quiz/add";
+import {
+  A,
+  V,
+  Vx,
+  Vboost,
+  Vslow,
+  CLOCK_DELTA,
+  SLOPE_LENGTH,
+  SLOPE_WIDTH,
+  EXTRA_PLAYER_PADDING,
+  CORRECT_PERCENT,
+} from "config";
+import { multiply, multiply_reverse } from "config/quiz/multiply";
+
+const mul_keys = Array.from(multiply.keys());
 
 export interface Flag {
-  correct: boolean;
-  text: string;
+  text?: string;
   x: number;
   z: number;
 }
@@ -17,8 +30,12 @@ export interface GameState {
   activeQuestion: [string, string | string[]];
   gameLoopActive: boolean;
   velocity: number;
+  distance: number;
+  steering: number;
   score: number;
   inARow: number;
+  shakes: number;
+  gameState: "starting" | "playing";
   flags: Flag[];
   delta: number;
   ticks: number;
@@ -27,44 +44,54 @@ export interface GameState {
 
 const initialState: GameState = {
   start: 0,
-  activeQuestion: ["", ""],
+  activeQuestion: ["", "СТАРТ"],
   gameLoopActive: true,
   velocity: 0,
+  distance: 0,
+  steering: 0,
   score: 0,
   inARow: 0,
-  flags: [{
-    correct: false,
-    text: "2×2",
-    x: -1, z: -SLOPE_LENGTH
-  },
-  {
-    correct: true,
-    text: "SAS",
-    x: 1, z: -SLOPE_LENGTH / 6
-  },
-  {
-    correct: false,
-    text: "4",
-    x: 2, z: - 2 * SLOPE_LENGTH / 6
-  },
-  {
-    correct: false,
-    text: "3",
-    x: 3, z: - 3 * SLOPE_LENGTH / 6
-  },
-  {
-    correct: false,
-    text: "2",
-    x: 3, z: - 4 * SLOPE_LENGTH / 6
-  },
-  {
-    correct: true,
-    text: "1",
-    x: 3, z: - 5 * SLOPE_LENGTH / 6
-  }],
+  shakes: 0,
+  gameState: "starting",
+  flags: [
+    {
+      text: "СТАРТ",
+      x: -2,
+      z: -SLOPE_LENGTH / 6,
+    },
+    {
+      text: "СТАРТ",
+      x: 2,
+      z: (-2 * SLOPE_LENGTH) / 6,
+    },
+    {
+      text: "СТАРТ",
+      x: 3,
+      z: (-3 * SLOPE_LENGTH) / 6,
+    },
+    {
+      text: "СТАРТ",
+      x: -2,
+      z: (-4 * SLOPE_LENGTH) / 6,
+    },
+    {
+      text: "СТАРТ",
+      x: -3,
+      z: (-5 * SLOPE_LENGTH) / 6,
+    },
+    {
+      text: "СТАРТ",
+      x: -4,
+      z: (-6 * SLOPE_LENGTH) / 6,
+    },
+  ],
   delta: 0,
   ticks: 0,
   playerX: 0,
+};
+
+export const flagHitTest = (flag: Flag, playerX: number): boolean => {
+  return flag.z > 0 && clamp(-playerX, flag.x - 0.5, flag.x + 0.5) === -playerX;
 };
 
 export const slice = createSlice({
@@ -72,8 +99,38 @@ export const slice = createSlice({
   initialState,
   reducers: {
     startGame: (state) => {
+      console.log("starting game");
       state.start = Date.now();
+      state.distance = 0;
+      state.gameState = "playing";
       state.gameLoopActive = true;
+      slice.caseReducers.genQuestion(state);
+    },
+    genQuestion: (state) => {
+      let key = mul_keys[irand(mul_keys.length)];
+      while (key === state.activeQuestion[0])
+        key = mul_keys[irand(mul_keys.length)];
+      state.activeQuestion = [key, multiply.get(key) || ""];
+      state.flags = state.flags.map((flag) => {
+        if (flag.z < -SLOPE_LENGTH / 5) {
+          let text = "";
+          const correct = irand(100) < CORRECT_PERCENT;
+          if (correct) {
+            const pool =
+              typeof state.activeQuestion[1] === "string"
+                ? [state.activeQuestion[1]]
+                : state.activeQuestion[1];
+            text = pool[irand(pool.length)];
+          } else {
+            let key = mul_keys[irand(mul_keys.length)];
+            while (key === state.activeQuestion[0])
+              key = mul_keys[irand(mul_keys.length)];
+            multiply.get(key) || console.log(key);
+            text = multiply.get(key) || "";
+          }
+          return { ...flag, text };
+        } else return flag;
+      });
     },
     pause: (state) => {
       state.gameLoopActive = false;
@@ -89,16 +146,97 @@ export const slice = createSlice({
       if (state.gameLoopActive) {
         const { delta, kb } = payload;
         state.delta = delta;
-        const Vmax = Math.max(kb.ArrowUp ? Vboost : kb.ArrowDown ? Vslow : V, state.velocity - delta * A);
+        const Vmax = Math.max(
+          kb.ArrowUp ? Vboost : kb.ArrowDown ? Vslow : V,
+          state.velocity - delta * A
+        );
         state.velocity = clamp(state.velocity + delta * A, 0, Vmax);
         state.ticks++;
-        const extraPosition = sqrt(clamp((abs(state.playerX) - SLOPE_WIDTH / 2) / EXTRA_PLAYER_PADDING * 2, 0.0, 0.65));
-        const sign = (state.playerX / abs(state.playerX) || 0)
-        const gravity = extraPosition ? - pow(1 - extraPosition, 1.5) * sign * 0.025 : 0;
-        state.playerX = clamp(
-          state.playerX + gravity + Vx * (state.velocity / V) * (1 - extraPosition) * delta * (Number(kb.ArrowLeft || 0) - Number(kb.ArrowRight || 0)), -(SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2, (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2
+        const extraPosition = sqrt(
+          clamp(
+            ((abs(state.playerX) - SLOPE_WIDTH / 2) / EXTRA_PLAYER_PADDING) * 2,
+            0.0,
+            0.65
+          )
         );
-        state.flags = state.flags.map(flag => ({...flag, x: flag.z > 0 ? rand(- SLOPE_WIDTH / 2, SLOPE_WIDTH / 2) : flag.x, z: flag.z > 0 ? -SLOPE_LENGTH : flag.z + state.velocity * delta }))
+        const sign = state.playerX / abs(state.playerX) || 0;
+        const gravity = extraPosition
+          ? -pow(1 - extraPosition, 1.5) * sign * 0.025
+          : 0;
+        state.playerX = clamp(
+          state.playerX +
+            gravity +
+            Vx *
+              (1 - extraPosition) *
+              delta *
+              (Number(kb.ArrowLeft || 0) - Number(kb.ArrowRight || 0)),
+          -(SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2,
+          (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2
+        );
+        state.steering = clamp(
+          state.steering +
+            (Number(kb.ArrowLeft || 0) - Number(kb.ArrowRight || 0)) *
+              delta *
+              2,
+          -1,
+          1
+        );
+        if (!kb.ArrowLeft && !kb.ArrowRight) {
+          state.steering *= 0.9;
+          if (abs(state.steering) < 0.01) state.steering = 0;
+        }
+
+        const hitFlag = state.flags.find((flag) =>
+          flagHitTest(flag, state.playerX)
+        );
+        if (hitFlag) {
+          if (hitFlag.text === state.activeQuestion[1]) {
+            if (state.gameState === "starting") {
+              slice.caseReducers.startGame(state);
+            } else {
+              // where we count score
+              state.score++;
+              state.inARow++;
+              slice.caseReducers.genQuestion(state);
+            }
+          } else {
+            state.inARow = 0;
+            state.shakes++;
+          }
+        }
+        state.flags = state.flags.map((flag) => {
+          if (flag.z > 0) {
+            if (!hitFlag && flag.text === state.activeQuestion[1]) {
+              state.inARow = 0;
+              state.shakes++;
+            }
+            let flagx = 0,
+              text = "";
+            flagx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
+            if (state.gameState === "starting") {
+              text = "СТАРТ";
+            } else {
+              const correct = irand(100) < CORRECT_PERCENT;
+              if (correct) {
+                const pool =
+                  typeof state.activeQuestion[1] === "string"
+                    ? [state.activeQuestion[1]]
+                    : state.activeQuestion[1];
+                text = pool[irand(pool.length)];
+              } else {
+                let key = mul_keys[irand(mul_keys.length)];
+                while (key === state.activeQuestion[0])
+                  key = mul_keys[irand(mul_keys.length)];
+                multiply.get(key) || console.log(key);
+                text = multiply.get(key) || "";
+              }
+            }
+            while (flagHitTest({ x: flagx, z: flag.z }, state.playerX))
+              flagx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
+            return { text, x: flagx, z: -SLOPE_LENGTH };
+          } else return { ...flag, z: flag.z + state.velocity * delta };
+        });
+        state.distance += state.velocity * delta;
       }
     },
   },

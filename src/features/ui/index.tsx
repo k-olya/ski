@@ -2,10 +2,12 @@ import React, { FC } from "react";
 import { useSelector } from "app/hooks";
 import { UiScreen } from "./slice";
 import { Main } from "./c/main";
+import { Game } from "./c/game";
 import { Settings } from "./c/settings";
 
 const components: Partial<Record<UiScreen, FC>> = {
   main: Main,
+  game: Game,
   settings: Settings,
 };
 

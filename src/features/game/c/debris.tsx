@@ -79,9 +79,11 @@ export const Debris: FC<Props> = ({ position }) => {
             key={i}
             ref={(x) => (ref.current[i] = x)}
             position={[
-              positions.current[i][0], positions.current[i][1] + sign * positions.current[i][0] * BORDER_TAN +
-              (positions.current[i][2] - (i * SLOPE_LENGTH) / DENSITY) *
-                SLOPE_TAN,
+              positions.current[i][0],
+              positions.current[i][1] +
+                sign * positions.current[i][0] * BORDER_TAN +
+                (positions.current[i][2] - (i * SLOPE_LENGTH) / DENSITY) *
+                  SLOPE_TAN,
               (-i * SLOPE_LENGTH) / DENSITY + positions.current[i][2],
             ]}
           >
