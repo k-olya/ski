@@ -17,7 +17,7 @@ export const Flag: FC<Props> = ({ color, position, text }) => (
     </Box>
     {!!text && (
       <Text
-        font="/Roboto-Regular.ttf"
+        font="Roboto-Regular.ttf"
         position={[0, 0.26, 0.05]}
         scale={[(0.4 / Math.max(text.length, 3)) * 3, 0.4, 0.4]}
       >

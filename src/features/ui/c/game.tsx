@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { IoPause, IoArrowBack, IoArrowForward, IoArrowUp, IoArrowDown } from "react-icons/io5";
+import {
+  IoPause,
+  IoArrowBack,
+  IoArrowForward,
+  IoArrowUp,
+  IoArrowDown,
+} from "react-icons/io5";
 import c from "classnames";
 import { useSelector, useDispatch } from "app/hooks";
 import { Button } from "./button";
@@ -54,20 +60,22 @@ export const Game = () => {
         <p>Скорость: {game.velocity.toFixed(0)}м/с</p>
         <p>Набрано очков: {game.score}</p>
         <p>Подряд: {game.inARow}</p>
-        <p className={c("text-7xl text-center py-3", { pulse })}>{game.activeQuestion[0]}</p>
+        <p className={c("text-7xl text-center py-3", { pulse })}>
+          {game.activeQuestion[0]}
+        </p>
       </div>
       <div>
         <TouchControl kbKey="ArrowLeft" className="bottom-24 left-4 p-4">
-          <IoArrowBack className="h-12 w-12"/>
+          <IoArrowBack className="h-12 w-12" />
         </TouchControl>
         <TouchControl kbKey="ArrowDown" className="bottom-8 left-9 p-2">
-          <IoArrowDown className="h-6 w-6"/>
+          <IoArrowDown className="h-6 w-6" />
         </TouchControl>
         <TouchControl kbKey="ArrowRight" className="bottom-24 right-4 p-4">
-          <IoArrowForward className="h-12 w-12"/>
+          <IoArrowForward className="h-12 w-12" />
         </TouchControl>
         <TouchControl kbKey="ArrowUp" className="bottom-8 right-9 p-2">
-          <IoArrowUp className="h-6 w-6"/>
+          <IoArrowUp className="h-6 w-6" />
         </TouchControl>
       </div>
     </div>

@@ -22,7 +22,7 @@ type GLTFResult = GLTF & {
 
 export function TreeHolidayPineSnowed(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF(
-    "/treeHolidayPineSnowed.glb"
+    "treeHolidayPineSnowed.glb"
   ) as GLTFResult;
   return (
     <group {...props} dispose={null}>
@@ -35,4 +35,4 @@ export function TreeHolidayPineSnowed(props: JSX.IntrinsicElements["group"]) {
   );
 }
 
-useGLTF.preload("/treeHolidayPineSnowed.glb");
+useGLTF.preload("treeHolidayPineSnowed.glb");

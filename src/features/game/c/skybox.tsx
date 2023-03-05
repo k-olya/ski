@@ -5,12 +5,12 @@ const EXT = "jpg";
 
 export const Skybox = () => {
   const [bk, dn, ft, lf, rt, up] = useTexture([
-    `/${NAME}_bk.${EXT}`,
-    `/${NAME}_dn.${EXT}`,
-    `/${NAME}_ft.${EXT}`,
-    `/${NAME}_lf.${EXT}`,
-    `/${NAME}_rt.${EXT}`,
-    `/${NAME}_up.${EXT}`,
+    `${NAME}_bk.${EXT}`,
+    `${NAME}_dn.${EXT}`,
+    `${NAME}_ft.${EXT}`,
+    `${NAME}_lf.${EXT}`,
+    `${NAME}_rt.${EXT}`,
+    `${NAME}_up.${EXT}`,
   ]);
   return (
     <group scale={[200, 200, 200]}>
