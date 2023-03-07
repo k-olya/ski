@@ -68,13 +68,13 @@ export const Game = () => {
         <TouchControl kbKey="ArrowLeft" className="bottom-24 left-4 p-4">
           <IoArrowBack className="h-12 w-12" />
         </TouchControl>
-        <TouchControl kbKey="ArrowDown" className="bottom-8 left-9 p-2">
+        <TouchControl toggle kbKey="ArrowDown" className="bottom-8 left-9 p-2">
           <IoArrowDown className="h-6 w-6" />
         </TouchControl>
         <TouchControl kbKey="ArrowRight" className="bottom-24 right-4 p-4">
           <IoArrowForward className="h-12 w-12" />
         </TouchControl>
-        <TouchControl kbKey="ArrowUp" className="bottom-8 right-9 p-2">
+        <TouchControl toggle kbKey="ArrowUp" className="bottom-8 right-9 p-2">
           <IoArrowUp className="h-6 w-6" />
         </TouchControl>
       </div>

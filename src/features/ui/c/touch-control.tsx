@@ -7,35 +7,33 @@ import c from "classnames";
 interface Props {
   className: string;
   kbKey: string;
+  toggle?: boolean;
   children?: ReactNode;
 }
 
-export const TouchControl: FC<Props> = ({ className, kbKey, children }) => {
+export const TouchControl: FC<Props> = ({ className, kbKey, children, toggle }) => {
   const dispatch = useDispatch();
-  const [active, setActive] = useState(false);
+  const kb = useSelector(s => s.kb);
   const ref = useRef<HTMLButtonElement>(null);
 
   useEventListener(
     "touchstart",
     () => {
-      setActive(true);
-      dispatch(updateKb({ [kbKey]: true }));
+      dispatch(updateKb({ [kbKey]: toggle ? !kb[kbKey] : true }));
     },
     ref
   );
   useEventListener(
     "touchend",
     () => {
-      setActive(false);
-      dispatch(updateKb({ [kbKey]: false }));
+      !toggle && dispatch(updateKb({ [kbKey]: false }));
     },
     ref
   );
   useEventListener(
-    "touchcancel",
+    "touchstart",
     () => {
-      setActive(false);
-      dispatch(updateKb({ [kbKey]: false }));
+      !toggle && dispatch(updateKb({ [kbKey]: false }));
     },
     ref
   );
@@ -44,8 +42,8 @@ export const TouchControl: FC<Props> = ({ className, kbKey, children }) => {
     <button
       ref={ref}
       className={c("fixed text-white rounded-lg", className, {
-        "bg-black bg-opacity-50": !active,
-        "bg-white bg-opacity-25": active,
+        "bg-black bg-opacity-50": !kb[kbKey],
+        "bg-white bg-opacity-25": kb[kbKey],
       })}
     >
       {children}

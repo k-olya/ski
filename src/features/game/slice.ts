@@ -30,6 +30,7 @@ export interface GameState {
   activeQuestion: [string, string | string[]];
   gameLoopActive: boolean;
   velocity: number;
+  Xvelocity: number;
   distance: number;
   steering: number;
   score: number;
@@ -40,6 +41,7 @@ export interface GameState {
   delta: number;
   ticks: number;
   playerX: number;
+  boost: number;
 }
 
 const initialState: GameState = {
@@ -47,6 +49,7 @@ const initialState: GameState = {
   activeQuestion: ["", "СТАРТ"],
   gameLoopActive: true,
   velocity: 0,
+  Xvelocity: 0,
   distance: 0,
   steering: 0,
   score: 0,
@@ -88,10 +91,11 @@ const initialState: GameState = {
   delta: 0,
   ticks: 0,
   playerX: 0,
+  boost: 0
 };
 
 export const flagHitTest = (flag: Flag, playerX: number): boolean => {
-  return flag.z > 0 && clamp(-playerX, flag.x - 0.5, flag.x + 0.5) === -playerX;
+  return flag.z > 0 && clamp(-playerX, flag.x - 0.55, flag.x + 0.55) === -playerX;
 };
 
 export const slice = createSlice({
@@ -146,11 +150,17 @@ export const slice = createSlice({
       if (state.gameLoopActive) {
         const { delta, kb } = payload;
         state.delta = delta;
+        state.boost = clamp(state.boost + 3 * delta * (Number(kb.ArrowUp || 0) - Number(kb.ArrowDown || 0)), -1, 1);
+        if (!kb.ArrowUp && !kb.ArrowDown) {
+          state.boost *= 0.9;
+          if (abs(state.boost) < 0.01) state.boost = 0;
+        }
+        const a = A + 2 * A * Number(kb.ArrowUp || kb.ArrowDown || 0);
         const Vmax = Math.max(
           kb.ArrowUp ? Vboost : kb.ArrowDown ? Vslow : V,
-          state.velocity - delta * A
+          state.velocity - delta * a
         );
-        state.velocity = clamp(state.velocity + delta * A, 0, Vmax);
+        state.velocity = clamp(state.velocity + delta * a, 0, Vmax);
         state.ticks++;
         const extraPosition = sqrt(
           clamp(
@@ -163,6 +173,7 @@ export const slice = createSlice({
         const gravity = extraPosition
           ? -pow(1 - extraPosition, 1.5) * sign * 0.025
           : 0;
+        const lastX = state.playerX;
         state.playerX = clamp(
           state.playerX +
             gravity +
@@ -173,16 +184,17 @@ export const slice = createSlice({
           -(SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2,
           (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2
         );
+        state.Xvelocity = (state.playerX - lastX) / delta;
         state.steering = clamp(
           state.steering +
             (Number(kb.ArrowLeft || 0) - Number(kb.ArrowRight || 0)) *
               delta *
-              2,
+              3,
           -1,
           1
         );
         if (!kb.ArrowLeft && !kb.ArrowRight) {
-          state.steering *= 0.9;
+          state.steering *= 0.8;
           if (abs(state.steering) < 0.01) state.steering = 0;
         }
 
@@ -199,14 +211,14 @@ export const slice = createSlice({
               state.inARow++;
               slice.caseReducers.genQuestion(state);
             }
-          } else {
+          } else if (hitFlag.text !== "СТАРТ") {
             state.inARow = 0;
             state.shakes++;
           }
         }
         state.flags = state.flags.map((flag) => {
           if (flag.z > 0) {
-            if (!hitFlag && flag.text === state.activeQuestion[1]) {
+            if (!hitFlag && flag.text === state.activeQuestion[1] && flag.text !== "СТАРТ") {
               state.inARow = 0;
               state.shakes++;
             }
