@@ -13,8 +13,8 @@ import {
 } from "config";
 import { tick } from "../slice";
 import { useSelector, useDispatch } from "app/hooks";
+import { mobile } from "app/mobile";
 
-import { Fox } from "../models/Fox";
 import { TreeHolidayPine } from "../models/TreeHolidayPine";
 import { TreeHolidayPineSnow } from "../models/TreeHolidayPineSnow";
 import { TreeHolidayPineSnowRound } from "../models/TreeHolidayPineSnowRound";
@@ -35,9 +35,8 @@ const models = [
   TreePineSnow,
 ];
 
-const DENSITY = 60;
-
 export const Debris: FC<Props> = ({ position }) => {
+  const DENSITY = mobile () ? 20 : 60;
   const { gameLoopActive, velocity, ticks, delta } = useSelector((s) => s.game);
   const debris = useRef<ReactNode[]>([]);
   const sign = position[0] >= 0 ? 1 : -1;

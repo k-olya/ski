@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import {
   IoPause,
-  IoArrowBack,
-  IoArrowForward,
-  IoArrowUp,
-  IoArrowDown,
 } from "react-icons/io5";
 import c from "classnames";
 import { useSelector, useDispatch } from "app/hooks";
 import { Button } from "./button";
 import { Timer } from "./timer";
-import { TouchControl } from "./touch-control";
+import { Controls } from "./controls";
 import { setScreen } from "../slice";
 import { pause } from "features/game/slice";
+import { mobile } from "app/mobile";
 
 export const Game = () => {
   const dispatch = useDispatch();
@@ -29,7 +26,7 @@ export const Game = () => {
   }, [game.score, setPulse]);
 
   return (
-    <div className="fixed top-0 left-0">
+    <div className="fixed top-0 left-0 w-screen h-screen">
       <Button
         className="fixed top-2 right-2 p-4 text-4xl"
         onClick={() => {
@@ -44,7 +41,7 @@ export const Game = () => {
           "fixed bg-black text-white bg-opacity-25 top-2 left-2 rounded px-3 py-2 text-lg w-64",
           { shakeX }
         )}
-      >
+      ><div className={c({ "hidden": mobile() })}>
         <p>
           Время: <Timer start={game.start} />
         </p>
@@ -58,26 +55,14 @@ export const Game = () => {
         </p>
 
         <p>Скорость: {game.velocity.toFixed(0)}м/с</p>
+        </div>
         <p>Набрано очков: {game.score}</p>
         <p>Подряд: {game.inARow}</p>
         <p className={c("text-7xl text-center py-3", { pulse })}>
           {game.activeQuestion[0]}
         </p>
       </div>
-      <div>
-        <TouchControl kbKey="ArrowLeft" className="bottom-24 left-4 p-4">
-          <IoArrowBack className="h-12 w-12" />
-        </TouchControl>
-        <TouchControl toggle kbKey="ArrowDown" className="bottom-8 left-9 p-2">
-          <IoArrowDown className="h-6 w-6" />
-        </TouchControl>
-        <TouchControl kbKey="ArrowRight" className="bottom-24 right-4 p-4">
-          <IoArrowForward className="h-12 w-12" />
-        </TouchControl>
-        <TouchControl toggle kbKey="ArrowUp" className="bottom-8 right-9 p-2">
-          <IoArrowUp className="h-6 w-6" />
-        </TouchControl>
+      <Controls />
       </div>
-    </div>
   );
 };

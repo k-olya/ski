@@ -26,4 +26,4 @@ export function Ski(props: JSX.IntrinsicElements['group']) {
   )
 }
 
-useGLTF.preload('/ski.glb')
+useGLTF.preload('ski.glb')

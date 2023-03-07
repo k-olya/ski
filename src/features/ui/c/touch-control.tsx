@@ -7,11 +7,12 @@ import c from "classnames";
 interface Props {
   className: string;
   kbKey: string;
+  opposite?: string;
   toggle?: boolean;
   children?: ReactNode;
 }
 
-export const TouchControl: FC<Props> = ({ className, kbKey, children, toggle }) => {
+export const TouchControl: FC<Props> = ({ className, kbKey, children, toggle, opposite }) => {
   const dispatch = useDispatch();
   const kb = useSelector(s => s.kb);
   const ref = useRef<HTMLButtonElement>(null);
@@ -19,7 +20,9 @@ export const TouchControl: FC<Props> = ({ className, kbKey, children, toggle }) 
   useEventListener(
     "touchstart",
     () => {
-      dispatch(updateKb({ [kbKey]: toggle ? !kb[kbKey] : true }));
+      let update = { [kbKey]: toggle ? !kb[kbKey] : true };
+      if (opposite) update = {...update, [opposite]: false};
+      dispatch(updateKb(update));
     },
     ref
   );
@@ -31,7 +34,7 @@ export const TouchControl: FC<Props> = ({ className, kbKey, children, toggle }) 
     ref
   );
   useEventListener(
-    "touchstart",
+    "touchcancel",
     () => {
       !toggle && dispatch(updateKb({ [kbKey]: false }));
     },
