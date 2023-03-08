@@ -102,6 +102,21 @@ export const flagHitTest = (flag: Flag, playerX: number): boolean => {
   return flag.z > 0 && clamp(-playerX, flag.x - 0.55, flag.x + 0.55) === -playerX;
 };
 
+const CONTROL_MAP: Record<string, string[]> = {
+  ArrowUp: ["ArrowUp", "KeyW", "Space"],
+  ArrowLeft: ["ArrowLeft", "KeyA", "ShiftLeft"],
+  ArrowDown: ["ArrowDown", "KeyS", "AltLeft", "AltRight"],
+  ArrowRight: ["ArrowRight", "KeyD", "ShiftRight"],
+}
+
+export const kbToControls = (kb: KbState): KbState => {
+  const r: KbState = {};
+  for (let x in CONTROL_MAP) {
+    r[x] = CONTROL_MAP[x].map(y => kb[y]).some(z => z);
+  }
+  return r;
+}
+
 export const slice = createSlice({
   name: "game",
   initialState,
@@ -153,15 +168,16 @@ export const slice = createSlice({
     ) => {
       if (state.gameLoopActive) {
         const { delta, kb } = payload;
+        const controls = kbToControls(kb);
         state.delta = delta;
-        state.boost = clamp(state.boost + 3 * delta * (Number(kb.ArrowUp || 0) - Number(kb.ArrowDown || 0)), -1, 1);
-        if (!kb.ArrowUp && !kb.ArrowDown) {
+        state.boost = clamp(state.boost + 3 * delta * (Number(controls.ArrowUp || 0) - Number(controls.ArrowDown || 0)), -1, 1);
+        if (!controls.ArrowUp && !controls.ArrowDown) {
           state.boost *= 0.9;
           if (abs(state.boost) < 0.01) state.boost = 0;
         }
-        const a = A + 2 * A * Number(kb.ArrowUp || kb.ArrowDown || 0);
+        const a = A + 2 * A * Number(controls.ArrowUp || controls.ArrowDown || 0);
         const Vmax = Math.max(
-          kb.ArrowUp ? Vboost : kb.ArrowDown ? Vslow : V,
+          controls.ArrowUp ? Vboost : controls.ArrowDown ? Vslow : V,
           state.velocity - delta * a
         );
         state.velocity = clamp(state.velocity + delta * a, 0, Vmax);
@@ -184,20 +200,20 @@ export const slice = createSlice({
             Vx *
               (1 - extraPosition) *
               delta *
-              (Number(kb.ArrowLeft || 0) - Number(kb.ArrowRight || 0)),
+              (Number(controls.ArrowLeft || 0) - Number(controls.ArrowRight || 0)),
           -(SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2,
           (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2
         );
         state.Xvelocity = (state.playerX - lastX) / delta;
         state.steering = clamp(
           state.steering +
-            (Number(kb.ArrowLeft || 0) - Number(kb.ArrowRight || 0)) *
+            (Number(controls.ArrowLeft || 0) - Number(controls.ArrowRight || 0)) *
               delta *
               3,
           -1,
           1
         );
-        if (!kb.ArrowLeft && !kb.ArrowRight) {
+        if (!controls.ArrowLeft && !controls.ArrowRight) {
           state.steering *= 0.8;
           if (abs(state.steering) < 0.01) state.steering = 0;
         }
