@@ -16,8 +16,12 @@ import {
   CORRECT_PERCENT,
 } from "config";
 import { multiply, multiply_reverse } from "config/quiz/multiply";
+import { add } from "config/quiz/add";
 
 const mul_keys = Array.from(multiply.keys());
+const add_keys = Array.from(add.keys());
+
+const quiz = add, quiz_keys = add_keys;
 
 export interface Flag {
   text?: string;
@@ -111,10 +115,10 @@ export const slice = createSlice({
       slice.caseReducers.genQuestion(state);
     },
     genQuestion: (state) => {
-      let key = mul_keys[irand(mul_keys.length)];
+      let key = quiz_keys[irand(quiz_keys.length)];
       while (key === state.activeQuestion[0])
-        key = mul_keys[irand(mul_keys.length)];
-      state.activeQuestion = [key, multiply.get(key) || ""];
+        key = quiz_keys[irand(quiz_keys.length)];
+      state.activeQuestion = [key, quiz.get(key) || ""];
       state.flags = state.flags.map((flag) => {
         if (flag.z < -SLOPE_LENGTH / 5) {
           let text = "";
@@ -126,11 +130,11 @@ export const slice = createSlice({
                 : state.activeQuestion[1];
             text = pool[irand(pool.length)];
           } else {
-            let key = mul_keys[irand(mul_keys.length)];
+            let key = quiz_keys[irand(quiz_keys.length)];
             while (key === state.activeQuestion[0])
-              key = mul_keys[irand(mul_keys.length)];
-            multiply.get(key) || console.log(key);
-            text = multiply.get(key) || "";
+              key = quiz_keys[irand(quiz_keys.length)];
+            quiz.get(key) || console.log(key);
+            text = quiz.get(key) || "";
           }
           return { ...flag, text };
         } else return flag;
@@ -236,11 +240,11 @@ export const slice = createSlice({
                     : state.activeQuestion[1];
                 text = pool[irand(pool.length)];
               } else {
-                let key = mul_keys[irand(mul_keys.length)];
+                let key = quiz_keys[irand(quiz_keys.length)];
                 while (key === state.activeQuestion[0])
-                  key = mul_keys[irand(mul_keys.length)];
-                multiply.get(key) || console.log(key);
-                text = multiply.get(key) || "";
+                  key = quiz_keys[irand(quiz_keys.length)];
+                quiz.get(key) || console.log(key);
+                text = quiz.get(key) || "";
               }
             }
             while (flagHitTest({ x: flagx, z: flag.z }, state.playerX))
