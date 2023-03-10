@@ -68,3 +68,34 @@ body {
   animation-timing-function: ease-in-out;
   transform-origin: center center;
 }
+
+@keyframes checkpulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.2, 1.2, 1.2);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.checkbox.checked svg {
+  animation-name: checkpulse;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
+  animation-direction: forwards;
+  transform-origin: center center;
+}
+
+.checkbox path {
+  transition: 0.1s all;
+}
+
+.checkbox.checked path {
+  transition: 0.3s all;
+  stroke-dashoffset: 9;
+}

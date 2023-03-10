@@ -12,16 +12,22 @@ interface Props {
   children?: ReactNode;
 }
 
-export const TouchControl: FC<Props> = ({ className, kbKey, children, toggle, opposite }) => {
+export const TouchControl: FC<Props> = ({
+  className,
+  kbKey,
+  children,
+  toggle,
+  opposite,
+}) => {
   const dispatch = useDispatch();
-  const kb = useSelector(s => s.kb);
+  const kb = useSelector((s) => s.kb);
   const ref = useRef<HTMLButtonElement>(null);
 
   useEventListener(
     "touchstart",
     () => {
       let update = { [kbKey]: toggle ? !kb[kbKey] : true };
-      if (opposite) update = {...update, [opposite]: false};
+      if (opposite) update = { ...update, [opposite]: false };
       dispatch(updateKb(update));
     },
     ref

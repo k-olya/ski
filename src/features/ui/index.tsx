@@ -15,8 +15,8 @@ const components: Partial<Record<UiScreen, FC>> = {
 export function Ui() {
   const dispatch = useDispatch();
   const { screen } = useSelector((s) => s.ui);
-  const { gameState } = useSelector(s => s.game);
-  const kb = useSelector(s => s.kb);
+  const { gameState } = useSelector((s) => s.game);
+  const kb = useSelector((s) => s.kb);
 
   useEffect(() => {
     if (kb.Escape) {
@@ -25,7 +25,7 @@ export function Ui() {
         dispatch(setScreen("settings"));
       } else {
         dispatch(unpause());
-        dispatch(setScreen(gameState === "playing" ? "game" : "main"))
+        dispatch(setScreen(gameState === "playing" ? "game" : "main"));
       }
     }
   }, [dispatch, kb]);

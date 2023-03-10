@@ -21,7 +21,8 @@ import { add } from "config/quiz/add";
 const mul_keys = Array.from(multiply.keys());
 const add_keys = Array.from(add.keys());
 
-const quiz = add, quiz_keys = add_keys;
+const quiz = add,
+  quiz_keys = add_keys;
 
 export interface Flag {
   text?: string;
@@ -46,6 +47,11 @@ export interface GameState {
   ticks: number;
   playerX: number;
   boost: number;
+  settings: {
+    "tutor-mode": boolean;
+    v: number;
+    density: number;
+  };
 }
 
 const initialState: GameState = {
@@ -95,11 +101,18 @@ const initialState: GameState = {
   delta: 0,
   ticks: 0,
   playerX: 0,
-  boost: 0
+  boost: 0,
+  settings: {
+    "tutor-mode": false,
+    v: 1,
+    density: 20,
+  },
 };
 
 export const flagHitTest = (flag: Flag, playerX: number): boolean => {
-  return flag.z > 0 && clamp(-playerX, flag.x - 0.55, flag.x + 0.55) === -playerX;
+  return (
+    flag.z > 0 && clamp(-playerX, flag.x - 0.55, flag.x + 0.55) === -playerX
+  );
 };
 
 const CONTROL_MAP: Record<string, string[]> = {
@@ -107,15 +120,15 @@ const CONTROL_MAP: Record<string, string[]> = {
   ArrowLeft: ["ArrowLeft", "KeyA", "ShiftLeft"],
   ArrowDown: ["ArrowDown", "KeyS", "AltLeft", "AltRight"],
   ArrowRight: ["ArrowRight", "KeyD", "ShiftRight"],
-}
+};
 
 export const kbToControls = (kb: KbState): KbState => {
   const r: KbState = {};
   for (let x in CONTROL_MAP) {
-    r[x] = CONTROL_MAP[x].map(y => kb[y]).some(z => z);
+    r[x] = CONTROL_MAP[x].map((y) => kb[y]).some((z) => z);
   }
   return r;
-}
+};
 
 export const slice = createSlice({
   name: "game",
@@ -128,6 +141,9 @@ export const slice = createSlice({
       state.gameState = "playing";
       state.gameLoopActive = true;
       slice.caseReducers.genQuestion(state);
+    },
+    toggleSetting: (state, { payload }: PayloadAction<"tutor-mode">) => {
+      state.settings["tutor-mode"] = !state.settings["tutor-mode"];
     },
     genQuestion: (state) => {
       let key = quiz_keys[irand(quiz_keys.length)];
@@ -170,12 +186,20 @@ export const slice = createSlice({
         const { delta, kb } = payload;
         const controls = kbToControls(kb);
         state.delta = delta;
-        state.boost = clamp(state.boost + 3 * delta * (Number(controls.ArrowUp || 0) - Number(controls.ArrowDown || 0)), -1, 1);
+        state.boost = clamp(
+          state.boost +
+            3 *
+              delta *
+              (Number(controls.ArrowUp || 0) - Number(controls.ArrowDown || 0)),
+          -1,
+          1
+        );
         if (!controls.ArrowUp && !controls.ArrowDown) {
           state.boost *= 0.9;
           if (abs(state.boost) < 0.01) state.boost = 0;
         }
-        const a = A + 2 * A * Number(controls.ArrowUp || controls.ArrowDown || 0);
+        const a =
+          A + 2 * A * Number(controls.ArrowUp || controls.ArrowDown || 0);
         const Vmax = Math.max(
           controls.ArrowUp ? Vboost : controls.ArrowDown ? Vslow : V,
           state.velocity - delta * a
@@ -200,14 +224,16 @@ export const slice = createSlice({
             Vx *
               (1 - extraPosition) *
               delta *
-              (Number(controls.ArrowLeft || 0) - Number(controls.ArrowRight || 0)),
+              (Number(controls.ArrowLeft || 0) -
+                Number(controls.ArrowRight || 0)),
           -(SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2,
           (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2
         );
         state.Xvelocity = (state.playerX - lastX) / delta;
         state.steering = clamp(
           state.steering +
-            (Number(controls.ArrowLeft || 0) - Number(controls.ArrowRight || 0)) *
+            (Number(controls.ArrowLeft || 0) -
+              Number(controls.ArrowRight || 0)) *
               delta *
               3,
           -1,
@@ -238,7 +264,11 @@ export const slice = createSlice({
         }
         state.flags = state.flags.map((flag) => {
           if (flag.z > 0) {
-            if (!hitFlag && flag.text === state.activeQuestion[1] && flag.text !== "СТАРТ") {
+            if (
+              !hitFlag &&
+              flag.text === state.activeQuestion[1] &&
+              flag.text !== "СТАРТ"
+            ) {
               state.inARow = 0;
               state.shakes++;
             }
@@ -274,6 +304,7 @@ export const slice = createSlice({
   },
 });
 
-export const { startGame, pause, unpause, reset, tick } = slice.actions;
+export const { startGame, pause, unpause, reset, tick, toggleSetting } =
+  slice.actions;
 
 export default slice.reducer;
