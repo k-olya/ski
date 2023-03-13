@@ -1,0 +1,66 @@
+.rc-slider {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  padding: 5px 0;
+  border-radius: 6px;
+  touch-action: none;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.rc-slider * {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.rc-slider-rail {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background-color: #e9e9e9;
+  border-radius: 6px;
+}
+.rc-slider-track {
+  position: absolute;
+  height: 4px;
+  background-color: mediumseagreen;
+  border-radius: 6px;
+}
+.rc-slider-handle {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  background-color: #fff;
+  border: solid 2px lightgray;
+  border-radius: 50%;
+  cursor: pointer;
+  cursor: -webkit-grab;
+  cursor: grab;
+  opacity: 0.8;
+  touch-action: pan-x;
+}
+.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+  border-color: lightgray;
+  box-shadow: 0 0 0 5px lightgray;
+}
+.rc-slider-handle:focus {
+  outline: none;
+  box-shadow: none;
+}
+.rc-slider-handle:focus-visible {
+  border-color: mediumseagreen;
+  box-shadow: 0 0 0 5px mediumseagreen;
+}
+.rc-slider-handle-click-focused:focus {
+  border-color: #96dbfa;
+  box-shadow: unset;
+}
+.rc-slider-handle:hover {
+  border-color: gray;
+}
+.rc-slider-handle:active {
+  border-color: #57c5f7;
+  box-shadow: 0 0 5px #57c5f7;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}

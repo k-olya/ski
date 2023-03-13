@@ -94,7 +94,7 @@ const initialState: GameState = {
     },
     {
       text: "СТАРТ",
-      x: -4,
+      x: 3,
       z: (-6 * SLOPE_LENGTH) / 6,
     },
   ],
@@ -105,7 +105,7 @@ const initialState: GameState = {
   settings: {
     "tutor-mode": false,
     v: 1,
-    density: 20,
+    density: 1,
   },
 };
 
@@ -144,6 +144,14 @@ export const slice = createSlice({
     },
     toggleSetting: (state, { payload }: PayloadAction<"tutor-mode">) => {
       state.settings["tutor-mode"] = !state.settings["tutor-mode"];
+    },
+    setNumberSetting: (
+      state,
+      {
+        payload: { setting, value },
+      }: PayloadAction<{ setting: "density" | "v"; value: number }>
+    ) => {
+      state.settings[setting] = value;
     },
     genQuestion: (state) => {
       let key = quiz_keys[irand(quiz_keys.length)];
@@ -199,12 +207,21 @@ export const slice = createSlice({
           if (abs(state.boost) < 0.01) state.boost = 0;
         }
         const a =
-          A + 2 * A * Number(controls.ArrowUp || controls.ArrowDown || 0);
+          A +
+          2 *
+            A *
+            Number(controls.ArrowUp || controls.ArrowDown || 0) *
+            state.settings.v;
         const Vmax = Math.max(
-          controls.ArrowUp ? Vboost : controls.ArrowDown ? Vslow : V,
-          state.velocity - delta * a
+          state.settings.v *
+            (controls.ArrowUp ? Vboost : controls.ArrowDown ? Vslow : V),
+          state.velocity - delta * a * state.settings.v
         );
-        state.velocity = clamp(state.velocity + delta * a, 0, Vmax);
+        state.velocity = clamp(
+          state.velocity + delta * a * state.settings.v,
+          0,
+          Vmax
+        );
         state.ticks++;
         const extraPosition = sqrt(
           clamp(
@@ -220,12 +237,13 @@ export const slice = createSlice({
         const lastX = state.playerX;
         state.playerX = clamp(
           state.playerX +
-            gravity +
-            Vx *
-              (1 - extraPosition) *
-              delta *
-              (Number(controls.ArrowLeft || 0) -
-                Number(controls.ArrowRight || 0)),
+            (gravity +
+              Vx *
+                (1 - extraPosition) *
+                delta *
+                (Number(controls.ArrowLeft || 0) -
+                  Number(controls.ArrowRight || 0))) *
+              state.settings.v,
           -(SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2,
           (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2
         );
@@ -274,7 +292,6 @@ export const slice = createSlice({
             }
             let flagx = 0,
               text = "";
-            flagx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
             if (state.gameState === "starting") {
               text = "СТАРТ";
             } else {
@@ -304,7 +321,14 @@ export const slice = createSlice({
   },
 });
 
-export const { startGame, pause, unpause, reset, tick, toggleSetting } =
-  slice.actions;
+export const {
+  startGame,
+  pause,
+  unpause,
+  reset,
+  tick,
+  toggleSetting,
+  setNumberSetting,
+} = slice.actions;
 
 export default slice.reducer;

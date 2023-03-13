@@ -18,7 +18,10 @@ export const Checkbox: FC<Props> = ({
     className={c("checkbox cursor-pointer my-2", { checked }, className)}
     onClick={() => onClick && onClick()}
   >
-    <svg className="inline-block h-8 mr-2" viewBox="-1 -1 12 12">
+    <svg
+      className="inline-block h-8 mr-2 relative bottom-0.5"
+      viewBox="-1 -1 12 12"
+    >
       <rect
         x="0"
         y="0"

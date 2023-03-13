@@ -36,8 +36,14 @@ const models = [
 ];
 
 export const Debris: FC<Props> = ({ position }) => {
-  const DENSITY = mobile() ? 20 : 60;
-  const { gameLoopActive, velocity, ticks, delta } = useSelector((s) => s.game);
+  const {
+    gameLoopActive,
+    velocity,
+    ticks,
+    delta,
+    settings: { density },
+  } = useSelector((s) => s.game);
+  const DENSITY = density * (mobile() ? 20 : 60);
   const debris = useRef<ReactNode[]>([]);
   const sign = position[0] >= 0 ? 1 : -1;
   const positions = useRef<number[][]>([]);
@@ -52,7 +58,7 @@ export const Debris: FC<Props> = ({ position }) => {
       rand(-0.05, 0.0),
       rand(-3.5, 3.5),
     ]);
-  }, []);
+  }, [DENSITY]);
 
   const ref = useRef<(Group | null)[]>([]);
   useEffect(() => {

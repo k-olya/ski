@@ -20,7 +20,6 @@ export const Game = () => {
 
   return (
     <div className="fixed top-0 left-0 w-screen h-screen">
-      <PauseButton />{" "}
       <div className="fixed w-full flex top-2 md:top-4 justify-center items-center">
         <div
           className={c(
@@ -44,12 +43,12 @@ export const Game = () => {
             <p>Скорость: {game.velocity.toFixed(0)}м/с</p>
           </div>
           <p>Очков: {game.score}</p>
-          <p>Подряд: {game.inARow}</p>
           <p className={c("text-7xl text-center py-3", { pulse })}>
             {game.activeQuestion[0]}
           </p>
         </div>
       </div>
+      <PauseButton />
       <Controls />
     </div>
   );

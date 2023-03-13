@@ -1,12 +1,10 @@
-# react-three/fiber + redux + typescript 
+# Math ski game
 
-Create amazing 3d web apps and games with this.
-
-Also includes [tailwind](https://tailwindcss.com) and a tiny math/transition library.
+Игра для обучения младших школьников азам арифметики. Спускайтесь по горнолыжному склону и собирайте флаги с правильными ответами на примеры, которые высвечиваются на экране. Тренирует сложение и вычитание чисел от 1 до 10, а также позволяет выучить таблицу умножения.
 
 ## scripts
 
-This project is based on [Create React App](https://facebook.github.io/create-react-app/docs/getting-started).
+This project is based on [r3f-redux-ts](https://github.com/k-olya/r3f-redux-ts).
 
 start in dev mode:
 ### `npm start`
@@ -17,4 +15,7 @@ run tests:
 build for production
 ### `npm run build`
 
-_Happy coding ♥_
+run prettier
+### `npm run prettify`
+
+_Made with love ♥_

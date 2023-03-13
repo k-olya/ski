@@ -83,11 +83,15 @@ body {
   }
 }
 
+.checkbox {
+  transform-origin: center center;
+}
+
 .checkbox.checked svg {
   animation-name: checkpulse;
   animation-duration: 0.3s;
   animation-timing-function: ease-in-out;
-  animation-direction: forwards;
+  animation-fill-mode: forwards;
   transform-origin: center center;
 }
 
