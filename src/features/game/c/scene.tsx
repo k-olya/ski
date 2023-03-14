@@ -117,7 +117,7 @@ export const Scene = () => {
             position={[-0.15, -0.31, 0.5 + steering * 0.2]}
             rotation={[
               0,
-              2 * Math.atan(clamp(steering * Vx, -1, 1) / velocity),
+              0.75 * Vx * Math.atan(clamp(steering * 2, -1, 1) / velocity),
               0,
             ]}
           />
@@ -125,7 +125,7 @@ export const Scene = () => {
             position={[0.15, -0.31, 0.5 - steering * 0.2]}
             rotation={[
               0,
-              2 * Math.atan(clamp(steering * Vx, -1, 1) / velocity),
+              0.75 * Vx * Math.atan(clamp(steering * 2, -1, 1) / velocity),
               0,
             ]}
           />

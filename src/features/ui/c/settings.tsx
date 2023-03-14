@@ -44,8 +44,10 @@ export const Settings = () => {
         >
           умножение
         </Checkbox>
+        <hr className="border-b-1 border-white w-full md:w-1/2 lg:w-1/3 rounded-lg" />
         <Checkbox
           checked={reverse}
+          small
           onClick={() => dispatch(toggleSetting("reverse"))}
         >
           иногда менять местами примеры и ответы

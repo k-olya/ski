@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { abs, clamp, lerp, sqrt, pow, rand, irand } from "app/math";
-import { mapStrings } from "app/strings";
+import { reverseMap } from "app/reverse-map";
 import { KbState } from "features/kb/slice";
 
 import {
@@ -23,6 +23,12 @@ const QUIZES = { add, subtract, multiply };
 const QUIZ_A = Object.keys(QUIZES) as unknown[] as Quizes[];
 const QUIZ_KEYS = Object.fromEntries(
   QUIZ_A.map(q => [q, Array.from(QUIZES[q].keys())])
+);
+const REVERSE_QUIZES = Object.fromEntries(
+  QUIZ_A.map(q => [q, reverseMap(QUIZES[q])])
+);
+const REVERSE_QUIZ_KEYS = Object.fromEntries(
+  QUIZ_A.map(q => [q, Array.from(REVERSE_QUIZES[q].keys())])
 );
 type Quizes = "add" | "subtract" | "multiply";
 
@@ -148,6 +154,30 @@ export const kbToControls = (kb: KbState): KbState => {
   return r;
 };
 
+export const isCorrectFlag = (
+  activeQuestion: [string, string | string[]],
+  hitFlag: Flag
+): boolean => {
+  if (activeQuestion[1] === "СТАРТ") {
+    return true;
+  }
+  // fill in every possible answer to avoid confusion
+  const question: [string, string[]] = [
+    activeQuestion[0],
+    QUIZ_A.flatMap(q =>
+      [QUIZES[q].get(activeQuestion[0]) || ""]
+        .concat(REVERSE_QUIZES[q].get(activeQuestion[0]) || [])
+        .concat(
+          // 2 * 2 === 2 + 2
+          typeof activeQuestion[1] === "string"
+            ? REVERSE_QUIZES[q].get(activeQuestion[1]) || []
+            : []
+        )
+    ),
+  ];
+  return question[1].includes(hitFlag.text || "");
+};
+
 export const slice = createSlice({
   name: "game",
   initialState,
@@ -187,8 +217,13 @@ export const slice = createSlice({
         x => state.settings.quizes[x as unknown as Quizes]
       );
       state.activeQuiz = activeSets[irand(activeSets.length)];
-      const quiz = QUIZES[state.activeQuiz],
-        quiz_keys = QUIZ_KEYS[state.activeQuiz];
+      state.activeReverse = state.settings.reverse && Boolean(irand(2));
+      const quiz = (state.activeReverse ? REVERSE_QUIZES : QUIZES)[
+          state.activeQuiz
+        ],
+        quiz_keys = (state.activeReverse ? REVERSE_QUIZ_KEYS : QUIZ_KEYS)[
+          state.activeQuiz
+        ];
       let key = quiz_keys[irand(quiz_keys.length)];
       while (key === state.activeQuestion[0]) {
         key = quiz_keys[irand(quiz_keys.length)];
@@ -208,7 +243,8 @@ export const slice = createSlice({
             let key = quiz_keys[irand(quiz_keys.length)];
             while (key === state.activeQuestion[0])
               key = quiz_keys[irand(quiz_keys.length)];
-            text = quiz.get(key) || "";
+            const pool = quiz.get(key) || "";
+            text = typeof pool === "string" ? pool : pool[irand(pool.length)];
           }
           return { ...flag, text };
         } else return flag;
@@ -301,7 +337,7 @@ export const slice = createSlice({
           flagHitTest(flag, state.playerX)
         );
         if (hitFlag) {
-          if (hitFlag.text === state.activeQuestion[1]) {
+          if (isCorrectFlag(state.activeQuestion, hitFlag)) {
             if (state.gameState === "starting") {
               slice.caseReducers.startGame(state);
             } else {
@@ -319,7 +355,7 @@ export const slice = createSlice({
           if (flag.z > 0) {
             if (
               !hitFlag &&
-              flag.text === state.activeQuestion[1] &&
+              isCorrectFlag(state.activeQuestion, flag) &&
               flag.text !== "СТАРТ"
             ) {
               state.inARow = 0;
@@ -338,12 +374,19 @@ export const slice = createSlice({
                     : state.activeQuestion[1];
                 text = pool[irand(pool.length)];
               } else {
-                const activeQuizKeys = QUIZ_KEYS[state.activeQuiz];
+                const activeQuizKeys = (
+                  state.activeReverse ? REVERSE_QUIZ_KEYS : QUIZ_KEYS
+                )[state.activeQuiz];
                 let key = activeQuizKeys[irand(activeQuizKeys.length)];
                 while (key === state.activeQuestion[0]) {
                   key = activeQuizKeys[irand(activeQuizKeys.length)];
                 }
-                text = QUIZES[state.activeQuiz].get(key) || "";
+                const pool =
+                  (state.activeReverse ? REVERSE_QUIZES : QUIZES)[
+                    state.activeQuiz
+                  ].get(key) || "";
+                text =
+                  typeof pool === "string" ? pool : pool[irand(pool.length)];
               }
             }
             while (flagHitTest({ x: flagx, z: flag.z }, state.playerX))

@@ -5,6 +5,7 @@ interface Props {
   checked?: boolean;
   children?: ReactNode;
   className?: string;
+  small?: boolean;
   onClick?: Function;
 }
 
@@ -13,13 +14,17 @@ export const Checkbox: FC<Props> = ({
   children,
   className,
   onClick,
+  small,
 }) => (
   <div
     className={c("checkbox cursor-pointer my-2", { checked }, className)}
     onClick={() => onClick && onClick()}
   >
     <svg
-      className="inline-block h-8 mr-2 relative bottom-0.5"
+      className={c("inline-block mr-2 relative", {
+        "h-8 bottom-0.5": !small,
+        "h-6": small,
+      })}
       viewBox="-1 -1 12 12"
     >
       <rect
@@ -43,6 +48,8 @@ export const Checkbox: FC<Props> = ({
         strokeDashoffset="20"
       />
     </svg>
-    <span className="text-lg">{children}</span>
+    <span className={c({ "text-lg": !small, "text-sm": small })}>
+      {children}
+    </span>
   </div>
 );

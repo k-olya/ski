@@ -12,7 +12,7 @@ export const CORRECT_PERCENT = 34;
 
 export const A = 3;
 export const V = 9;
-export const Vx = 4.5;
+export const Vx = 5;
 export const Vboost = 21;
 export const Vslow = 4.5;
 
