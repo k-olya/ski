@@ -18,6 +18,7 @@ import {
   SLOPE_WIDTH,
   SLOPE_ANGLE,
   EXTRA_PLAYER_PADDING,
+  Vx,
 } from "config";
 
 import { add } from "config/quiz/add";
@@ -27,10 +28,10 @@ import { regions, regions_reverse } from "config/quiz/regions-russia";
 
 export const Scene = () => {
   const dispatch = useDispatch();
-  const kb = useSelector((s) => s.kb);
+  const kb = useSelector(s => s.kb);
   const { gameLoopActive, playerX, Xvelocity, velocity, steering, boost } =
-    useSelector((s) => s.game);
-  const { screen } = useSelector((s) => s.ui);
+    useSelector(s => s.game);
+  const { screen } = useSelector(s => s.ui);
   const init = useRef(false);
   const doc = useRef(document);
 
@@ -116,7 +117,7 @@ export const Scene = () => {
             position={[-0.15, -0.31, 0.5 + steering * 0.2]}
             rotation={[
               0,
-              2 * Math.atan(clamp(steering * 2, -1, 1) / velocity),
+              2 * Math.atan(clamp(steering * Vx, -1, 1) / velocity),
               0,
             ]}
           />
@@ -124,7 +125,7 @@ export const Scene = () => {
             position={[0.15, -0.31, 0.5 - steering * 0.2]}
             rotation={[
               0,
-              2 * Math.atan(clamp(steering * 2, -1, 1) / velocity),
+              2 * Math.atan(clamp(steering * Vx, -1, 1) / velocity),
               0,
             ]}
           />

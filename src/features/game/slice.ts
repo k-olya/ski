@@ -17,12 +17,14 @@ import {
 } from "config";
 import { multiply, multiply_reverse } from "config/quiz/multiply";
 import { add } from "config/quiz/add";
+import { subtract } from "config/quiz/subtract";
 
-const mul_keys = Array.from(multiply.keys());
-const add_keys = Array.from(add.keys());
-
-const quiz = add,
-  quiz_keys = add_keys;
+const QUIZES = { add, subtract, multiply };
+const QUIZ_A = Object.keys(QUIZES) as unknown[] as Quizes[];
+const QUIZ_KEYS = Object.fromEntries(
+  QUIZ_A.map(q => [q, Array.from(QUIZES[q].keys())])
+);
+type Quizes = "add" | "subtract" | "multiply";
 
 export interface Flag {
   text?: string;
@@ -33,6 +35,8 @@ export interface Flag {
 export interface GameState {
   start: number;
   activeQuestion: [string, string | string[]];
+  activeQuiz: Quizes;
+  activeReverse: boolean;
   gameLoopActive: boolean;
   velocity: number;
   Xvelocity: number;
@@ -51,12 +55,20 @@ export interface GameState {
     "tutor-mode": boolean;
     v: number;
     density: number;
+    reverse: boolean;
+    quizes: {
+      add: boolean;
+      subtract: boolean;
+      multiply: boolean;
+    };
   };
 }
 
 const initialState: GameState = {
   start: 0,
   activeQuestion: ["", "СТАРТ"],
+  activeQuiz: "multiply",
+  activeReverse: false,
   gameLoopActive: true,
   velocity: 0,
   Xvelocity: 0,
@@ -106,6 +118,12 @@ const initialState: GameState = {
     "tutor-mode": false,
     v: 1,
     density: 1,
+    reverse: false,
+    quizes: {
+      add: false,
+      subtract: false,
+      multiply: true,
+    },
   },
 };
 
@@ -125,7 +143,7 @@ const CONTROL_MAP: Record<string, string[]> = {
 export const kbToControls = (kb: KbState): KbState => {
   const r: KbState = {};
   for (let x in CONTROL_MAP) {
-    r[x] = CONTROL_MAP[x].map((y) => kb[y]).some((z) => z);
+    r[x] = CONTROL_MAP[x].map(y => kb[y]).some(z => z);
   }
   return r;
 };
@@ -134,7 +152,7 @@ export const slice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    startGame: (state) => {
+    startGame: state => {
       console.log("starting game");
       state.start = Date.now();
       state.distance = 0;
@@ -142,8 +160,19 @@ export const slice = createSlice({
       state.gameLoopActive = true;
       slice.caseReducers.genQuestion(state);
     },
-    toggleSetting: (state, { payload }: PayloadAction<"tutor-mode">) => {
-      state.settings["tutor-mode"] = !state.settings["tutor-mode"];
+    toggleSetting: (
+      state,
+      { payload }: PayloadAction<"tutor-mode" | "reverse">
+    ) => {
+      state.settings[payload] = !state.settings[payload];
+    },
+    toggleQuizSetting: (state, { payload }: PayloadAction<Quizes>) => {
+      state.settings.quizes[payload] = !state.settings.quizes[payload];
+
+      // prevent having an empty list
+      if (QUIZ_A.every(q => !state.settings.quizes[q])) {
+        state.settings.quizes[payload] = true;
+      }
     },
     setNumberSetting: (
       state,
@@ -153,12 +182,19 @@ export const slice = createSlice({
     ) => {
       state.settings[setting] = value;
     },
-    genQuestion: (state) => {
+    genQuestion: state => {
+      const activeSets = QUIZ_A.filter(
+        x => state.settings.quizes[x as unknown as Quizes]
+      );
+      state.activeQuiz = activeSets[irand(activeSets.length)];
+      const quiz = QUIZES[state.activeQuiz],
+        quiz_keys = QUIZ_KEYS[state.activeQuiz];
       let key = quiz_keys[irand(quiz_keys.length)];
-      while (key === state.activeQuestion[0])
+      while (key === state.activeQuestion[0]) {
         key = quiz_keys[irand(quiz_keys.length)];
+      }
       state.activeQuestion = [key, quiz.get(key) || ""];
-      state.flags = state.flags.map((flag) => {
+      state.flags = state.flags.map(flag => {
         if (flag.z < -SLOPE_LENGTH / 5) {
           let text = "";
           const correct = irand(100) < CORRECT_PERCENT;
@@ -172,20 +208,19 @@ export const slice = createSlice({
             let key = quiz_keys[irand(quiz_keys.length)];
             while (key === state.activeQuestion[0])
               key = quiz_keys[irand(quiz_keys.length)];
-            quiz.get(key) || console.log(key);
             text = quiz.get(key) || "";
           }
           return { ...flag, text };
         } else return flag;
       });
     },
-    pause: (state) => {
+    pause: state => {
       state.gameLoopActive = false;
     },
-    unpause: (state) => {
+    unpause: state => {
       state.gameLoopActive = true;
     },
-    reset: (state) => initialState,
+    reset: state => initialState,
     tick: (
       state,
       { payload }: PayloadAction<{ delta: number; kb: KbState }>
@@ -262,7 +297,7 @@ export const slice = createSlice({
           if (abs(state.steering) < 0.01) state.steering = 0;
         }
 
-        const hitFlag = state.flags.find((flag) =>
+        const hitFlag = state.flags.find(flag =>
           flagHitTest(flag, state.playerX)
         );
         if (hitFlag) {
@@ -280,7 +315,7 @@ export const slice = createSlice({
             state.shakes++;
           }
         }
-        state.flags = state.flags.map((flag) => {
+        state.flags = state.flags.map(flag => {
           if (flag.z > 0) {
             if (
               !hitFlag &&
@@ -303,11 +338,12 @@ export const slice = createSlice({
                     : state.activeQuestion[1];
                 text = pool[irand(pool.length)];
               } else {
-                let key = quiz_keys[irand(quiz_keys.length)];
-                while (key === state.activeQuestion[0])
-                  key = quiz_keys[irand(quiz_keys.length)];
-                quiz.get(key) || console.log(key);
-                text = quiz.get(key) || "";
+                const activeQuizKeys = QUIZ_KEYS[state.activeQuiz];
+                let key = activeQuizKeys[irand(activeQuizKeys.length)];
+                while (key === state.activeQuestion[0]) {
+                  key = activeQuizKeys[irand(activeQuizKeys.length)];
+                }
+                text = QUIZES[state.activeQuiz].get(key) || "";
               }
             }
             while (flagHitTest({ x: flagx, z: flag.z }, state.playerX))
@@ -328,6 +364,7 @@ export const {
   reset,
   tick,
   toggleSetting,
+  toggleQuizSetting,
   setNumberSetting,
 } = slice.actions;
 
