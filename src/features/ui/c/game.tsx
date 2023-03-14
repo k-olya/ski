@@ -4,9 +4,10 @@ import { useSelector } from "app/hooks";
 import { PauseButton } from "./pause-button";
 import { Timer } from "./timer";
 import { Controls } from "./controls";
+import { pow, sqrt } from "app/math";
 
 export const Game = () => {
-  const game = useSelector((s) => s.game);
+  const game = useSelector(s => s.game);
   const [shakeX, setShake] = useState(false);
   const [pulse, setPulse] = useState(false);
   useEffect(() => {
@@ -23,7 +24,7 @@ export const Game = () => {
       <div className="fixed w-full flex top-2 md:top-4 justify-center items-center">
         <div
           className={c(
-            "bg-black text-white bg-opacity-25 rounded px-3 py-2 text-lg md:w-64",
+            "bg-black text-white bg-opacity-25 rounded px-2 y-1 md:px-3 md:py-2 text-lg md:w-64",
             { shakeX }
           )}
         >
@@ -39,11 +40,17 @@ export const Game = () => {
               ).toFixed(2)}
               {game.distance > 1000 ? "км" : "м"}
             </p>
-
-            <p>Скорость: {game.velocity.toFixed(0)}м/с</p>
+            <p>Правильно подряд: {game.inARow}</p>
           </div>
-          <p>Очков: {game.score}</p>
-          <p className={c("text-7xl text-center py-3", { pulse })}>
+          <p>Скорость: {game.velocity.toFixed(0)}м/с</p>
+          <p>
+            Очки: {(game.score / pow(Date.now() - game.start, 0.5)).toFixed(0)}
+          </p>
+          <p
+            className={c("text-7xl text-center md:py-2", {
+              pulse,
+            })}
+          >
             {game.activeQuestion[0]}
           </p>
         </div>

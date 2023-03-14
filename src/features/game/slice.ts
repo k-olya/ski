@@ -14,6 +14,7 @@ import {
   SLOPE_WIDTH,
   EXTRA_PLAYER_PADDING,
   CORRECT_PERCENT,
+  SCORE_MULTIPLIER,
 } from "config";
 import { multiply, multiply_reverse } from "config/quiz/multiply";
 import { add } from "config/quiz/add";
@@ -342,11 +343,18 @@ export const slice = createSlice({
               slice.caseReducers.startGame(state);
             } else {
               // where we count score
-              state.score++;
               state.inARow++;
+              const activeSets = QUIZ_A.filter(
+                x => state.settings.quizes[x as unknown as Quizes]
+              ).length;
+              state.score +=
+                SCORE_MULTIPLIER *
+                pow(state.inARow, 0.25) *
+                activeSets *
+                (state.settings.reverse ? 1.5 : 1);
               slice.caseReducers.genQuestion(state);
             }
-          } else if (hitFlag.text !== "СТАРТ") {
+          } else {
             state.inARow = 0;
             state.shakes++;
           }
