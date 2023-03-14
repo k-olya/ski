@@ -16,6 +16,7 @@ import {
   CORRECT_PERCENT,
   SCORE_MULTIPLIER,
 } from "config";
+import { trees } from "./models";
 import { multiply, multiply_reverse } from "config/quiz/multiply";
 import { add } from "config/quiz/add";
 import { subtract } from "config/quiz/subtract";
@@ -35,6 +36,7 @@ type Quizes = "add" | "subtract" | "multiply";
 
 export interface Flag {
   text?: string;
+  modelIndex?: number;
   x: number;
   z: number;
 }
@@ -54,6 +56,9 @@ export interface GameState {
   shakes: number;
   gameState: "starting" | "playing";
   flags: Flag[];
+  debris: Flag[];
+  trampolines: Flag[];
+  trampolineEventTime: number;
   delta: number;
   ticks: number;
   playerX: number;
@@ -117,6 +122,19 @@ const initialState: GameState = {
       z: (-6 * SLOPE_LENGTH) / 6,
     },
   ],
+  debris: [
+    {
+      x: -2,
+      z: (-2.5 * SLOPE_LENGTH) / 6,
+    },
+  ],
+  trampolines: [
+    {
+      x: -2,
+      z: (-5.5 * SLOPE_LENGTH) / 6,
+    },
+  ],
+  trampolineEventTime: 0,
   delta: 0,
   ticks: 0,
   playerX: 0,
@@ -134,9 +152,14 @@ const initialState: GameState = {
   },
 };
 
-export const flagHitTest = (flag: Flag, playerX: number): boolean => {
+export const flagHitTest = (
+  flag: Flag,
+  playerX: number,
+  w: number = 1.1
+): boolean => {
   return (
-    flag.z > 0 && clamp(-playerX, flag.x - 0.55, flag.x + 0.55) === -playerX
+    flag.z > 0 &&
+    clamp(-playerX, flag.x - w * 0.5, flag.x + w * 0.5) === -playerX
   );
 };
 
@@ -334,6 +357,7 @@ export const slice = createSlice({
           if (abs(state.steering) < 0.01) state.steering = 0;
         }
 
+        // flags
         const hitFlag = state.flags.find(flag =>
           flagHitTest(flag, state.playerX)
         );
@@ -402,6 +426,41 @@ export const slice = createSlice({
             return { text, x: flagx, z: -SLOPE_LENGTH };
           } else return { ...flag, z: flag.z + state.velocity * delta };
         });
+
+        // debris
+        const hitDebris = state.debris.find(d =>
+          flagHitTest(d, state.playerX, 0.4)
+        );
+        if (hitDebris) {
+          if (state.gameState === "playing") {
+            state.start = Date.now();
+          }
+          state.distance = 0;
+          state.velocity = 0;
+          state.inARow = 0;
+          state.score = 0;
+        }
+        state.debris = state.debris.map(d => {
+          if (d.z > 0) {
+            const dx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
+            return { modelIndex: irand(trees.length), x: dx, z: -SLOPE_LENGTH };
+          } else return { ...d, z: d.z + state.velocity * delta };
+        });
+        // trampolines
+        const hitTrampoline = state.trampolines.find(d =>
+          flagHitTest(d, state.playerX, 0.8)
+        );
+        if (hitTrampoline) {
+          state.trampolineEventTime = Date.now();
+        }
+        state.debris = state.debris.map(d => {
+          if (d.z > 0) {
+            const dx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
+            return { modelIndex: irand(trees.length), x: dx, z: -SLOPE_LENGTH };
+          } else return { ...d, z: d.z + state.velocity * delta };
+        });
+
+        // distance
         state.distance += state.velocity * delta;
       }
     },

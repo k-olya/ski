@@ -6,8 +6,9 @@ import { useSelector, useDispatch } from "app/hooks";
 import { abs, clamp, lerp, PI } from "app/math";
 import { useEventListener } from "app/event-listener";
 import { tick, pause, unpause } from "../slice";
-import { Debris } from "./debris";
+import { Forest } from "./forest";
 import { Flags } from "./flags";
+import { Debris } from "./debris";
 import { Slope } from "./slope";
 import { Skybox } from "./skybox";
 import { Ski } from "../models/Ski";
@@ -96,10 +97,11 @@ export const Scene = () => {
         <Skybox />
         <Slope />
         <Flags />
-        <Debris position={[6.5, 1.35, 2]} />
-        <Debris position={[9.5, 3.15, 2]} />
-        <Debris position={[-6.5, 1.35, 2]} />
-        <Debris position={[-9.5, 3.15, 2]} />
+        <Debris />
+        <Forest position={[6.5, 1.35, 2]} />
+        <Forest position={[9.5, 3.15, 2]} />
+        <Forest position={[-6.5, 1.35, 2]} />
+        <Forest position={[-9.5, 3.15, 2]} />
         <group
           rotation={[
             -SLOPE_ANGLE,
