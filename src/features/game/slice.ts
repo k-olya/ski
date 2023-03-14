@@ -124,14 +124,14 @@ const initialState: GameState = {
   ],
   debris: [
     {
-      x: -2,
+      x: -3.3,
       z: (-2.5 * SLOPE_LENGTH) / 6,
     },
   ],
   trampolines: [
     {
-      x: -2,
-      z: (-5.5 * SLOPE_LENGTH) / 6,
+      x: 3.3,
+      z: (-5.25 * SLOPE_LENGTH) / 6,
     },
   ],
   trampolineEventTime: 0,
@@ -448,15 +448,15 @@ export const slice = createSlice({
         });
         // trampolines
         const hitTrampoline = state.trampolines.find(d =>
-          flagHitTest(d, state.playerX, 0.8)
+          flagHitTest(d, state.playerX, 1)
         );
         if (hitTrampoline) {
           state.trampolineEventTime = Date.now();
         }
-        state.debris = state.debris.map(d => {
+        state.trampolines = state.trampolines.map(d => {
           if (d.z > 0) {
             const dx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
-            return { modelIndex: irand(trees.length), x: dx, z: -SLOPE_LENGTH };
+            return { x: dx, z: -SLOPE_LENGTH };
           } else return { ...d, z: d.z + state.velocity * delta };
         });
 

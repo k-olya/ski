@@ -3,7 +3,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { PointerLockControls, useGLTF } from "@react-three/drei";
 import { useInterval } from "app/interval";
 import { useSelector, useDispatch } from "app/hooks";
-import { abs, clamp, lerp, PI } from "app/math";
+import { abs, clamp, lerp, PI, pow } from "app/math";
 import { useEventListener } from "app/event-listener";
 import { tick, pause, unpause } from "../slice";
 import { Forest } from "./forest";
@@ -26,15 +26,27 @@ import { add } from "config/quiz/add";
 import { subtract, sub_reverse } from "config/quiz/subtract";
 import { multiply, multiply_reverse } from "config/quiz/multiply";
 import { regions, regions_reverse } from "config/quiz/regions-russia";
+import { Trampolines } from "./trampolines";
 
 export const Scene = () => {
   const dispatch = useDispatch();
   const kb = useSelector(s => s.kb);
-  const { gameLoopActive, playerX, Xvelocity, velocity, steering, boost } =
-    useSelector(s => s.game);
+  const {
+    gameLoopActive,
+    playerX,
+    Xvelocity,
+    velocity,
+    steering,
+    boost,
+    trampolineEventTime,
+    start,
+  } = useSelector(s => s.game);
   const { screen } = useSelector(s => s.ui);
   const init = useRef(false);
   const doc = useRef(document);
+
+  const trampolineT = clamp((Date.now() - trampolineEventTime) / 1000);
+  const trampolineY = 1 - 4 * pow(trampolineT - 0.5, 2);
 
   useThree(({ camera }) => {
     if (!init.current) {
@@ -84,7 +96,7 @@ export const Scene = () => {
       <group
         position={[
           playerX,
-          lerp(0, 0.75, extraPosition) + boost * 0.1 - 0.1,
+          lerp(0, 0.75, extraPosition) + boost * 0.1 - 0.1 - trampolineY,
           0,
         ]}
         rotation={[
@@ -98,6 +110,7 @@ export const Scene = () => {
         <Slope />
         <Flags />
         <Debris />
+        <Trampolines />
         <Forest position={[6.5, 1.35, 2]} />
         <Forest position={[9.5, 3.15, 2]} />
         <Forest position={[-6.5, 1.35, 2]} />
@@ -110,7 +123,7 @@ export const Scene = () => {
           ]}
           position={[
             -playerX,
-            lerp(0, 0.2, extraPosition),
+            lerp(0, 0.2, extraPosition) + trampolineY,
             -lerp(0, 0.2, extraPosition),
           ]}
           scale={[0.5, 0.5, 0.5]}
