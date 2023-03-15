@@ -5,18 +5,20 @@ import { Main } from "./c/main";
 import { Game } from "./c/game";
 import { Settings } from "./c/settings";
 import { pause, unpause } from "features/game/slice";
+import { Attributions } from "./c/attributions";
 
 const components: Partial<Record<UiScreen, FC>> = {
   main: Main,
   game: Game,
   settings: Settings,
+  attributions: Attributions,
 };
 
 export function Ui() {
   const dispatch = useDispatch();
-  const { screen } = useSelector((s) => s.ui);
-  const { gameState } = useSelector((s) => s.game);
-  const kb = useSelector((s) => s.kb);
+  const { screen } = useSelector(s => s.ui);
+  const { gameState } = useSelector(s => s.game);
+  const kb = useSelector(s => s.kb);
 
   useEffect(() => {
     if (kb.Escape) {

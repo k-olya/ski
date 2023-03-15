@@ -1,3 +1,4 @@
+import c from "classnames";
 import { useSelector, useDispatch } from "app/hooks";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
@@ -29,7 +30,12 @@ export const Settings = () => {
 
   return (
     <div className="fixed top-0 w-full h-full p-4 flex justify-center items-center">
-      <div className="w-full h-full rounded-lg bg-opacity-50 bg-black text-white px-6 py-5 flex flex-col">
+      <div
+        className={c(
+          "w-full h-full rounded-lg bg-opacity-75 bg-black text-white px-6 py-5 flex flex-col",
+          { "overflow-y-scroll": mobile() }
+        )}
+      >
         <h2 className="text-3xl w-full pb-2">Настройки</h2>
         <hr className="border-b-2 border-white w-full rounded-lg" />
         <h2 className="text-xl mt-2">Наборы заданий</h2>
@@ -96,7 +102,7 @@ export const Settings = () => {
           </div>
           <Slider
             min={0.25}
-            max={3}
+            max={2.75}
             step={0.25}
             value={v}
             className="mx-3"
@@ -110,27 +116,37 @@ export const Settings = () => {
         </div>
         <Checkbox
           checked={debris}
-          className="mt-4"
+          className="mt-5"
           onClick={() => dispatch(toggleSetting("debris"))}
         >
           препятствия
         </Checkbox>
         <Checkbox
           checked={trampolines}
+          className="mb-4"
           onClick={() => dispatch(toggleSetting("trampolines"))}
         >
           трамплины
         </Checkbox>
-
-        <Button
-          className="text-2xl py-2 px-3 mx-auto mb-0 mt-auto"
-          onClick={() => {
-            dispatch(setScreen("main"));
-            dispatch(unpause());
-          }}
-        >
-          Сохранить и выйти
-        </Button>
+        <div className="flex flex-col md:flex-row-reverse mt-auto justify-end">
+          <Button
+            className="text-2xl py-2 px-3 mb-2 md:mb-0 mt-auto"
+            onClick={() => {
+              dispatch(setScreen("attributions"));
+            }}
+          >
+            Показать авторов
+          </Button>
+          <Button
+            className="text-2xl py-2 px-3 mb-0 md:mr-4"
+            onClick={() => {
+              dispatch(setScreen("main"));
+              dispatch(unpause());
+            }}
+          >
+            Сохранить и выйти
+          </Button>
+        </div>
       </div>
     </div>
   );
