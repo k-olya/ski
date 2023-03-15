@@ -6,6 +6,7 @@ import { Game } from "./c/game";
 import { Settings } from "./c/settings";
 import { pause, unpause } from "features/game/slice";
 import { Attributions } from "./c/attributions";
+import { useProgress } from "@react-three/drei";
 
 const components: Partial<Record<UiScreen, FC>> = {
   main: Main,
@@ -16,6 +17,7 @@ const components: Partial<Record<UiScreen, FC>> = {
 
 export function Ui() {
   const dispatch = useDispatch();
+  const { loaded, total } = useProgress();
   const { screen } = useSelector(s => s.ui);
   const { gameState } = useSelector(s => s.game);
   const kb = useSelector(s => s.kb);
@@ -33,6 +35,6 @@ export function Ui() {
   }, [dispatch, kb]);
 
   const C = components[screen];
-  if (C) return <C />;
+  if (loaded && loaded === total && C) return <C />;
   return null;
 }
