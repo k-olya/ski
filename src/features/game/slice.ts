@@ -60,6 +60,7 @@ export interface GameState {
   debris: Flag[];
   trampolines: Flag[];
   trampolineEventTime: number;
+  trampolineVelocity: number;
   delta: number;
   ticks: number;
   playerX: number;
@@ -142,6 +143,7 @@ const initialState: GameState = {
     },
   ],
   trampolineEventTime: 0,
+  trampolineVelocity: 0,
   delta: 0,
   ticks: 0,
   playerX: 0,
@@ -471,6 +473,7 @@ export const slice = createSlice({
           flagHitTest(d, state.playerX, 1.25)
         );
         if (hitTrampoline && !flying && state.settings.trampolines) {
+          state.trampolineVelocity = state.velocity;
           state.trampolineEventTime = Date.now();
         }
         state.trampolines = state.trampolines.map(d => {

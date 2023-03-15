@@ -41,6 +41,7 @@ export const Scene = () => {
     steering,
     boost,
     trampolineEventTime,
+    trampolineVelocity,
     start,
   } = useSelector(s => s.game);
   const { screen } = useSelector(s => s.ui);
@@ -48,10 +49,11 @@ export const Scene = () => {
   const doc = useRef(document);
 
   const trampolineT = clamp(
-    (Date.now() - trampolineEventTime) / ((TRAMPOLINE_TIME * velocity) / V)
+    (Date.now() - trampolineEventTime) /
+      ((TRAMPOLINE_TIME * trampolineVelocity) / V)
   );
   const trampolineY =
-    ((1 - 4 * pow(trampolineT - 0.5, 2)) * velocity * 1.5) / V;
+    ((1 - 4 * pow(trampolineT - 0.5, 2)) * trampolineVelocity * 1.5) / V;
 
   useThree(({ camera }) => {
     if (!init.current) {
