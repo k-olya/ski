@@ -19,7 +19,9 @@ import {
   SLOPE_WIDTH,
   SLOPE_ANGLE,
   EXTRA_PLAYER_PADDING,
+  TRAMPOLINE_TIME,
   Vx,
+  V,
 } from "config";
 
 import { add } from "config/quiz/add";
@@ -45,8 +47,11 @@ export const Scene = () => {
   const init = useRef(false);
   const doc = useRef(document);
 
-  const trampolineT = clamp((Date.now() - trampolineEventTime) / 1000);
-  const trampolineY = 1 - 4 * pow(trampolineT - 0.5, 2);
+  const trampolineT = clamp(
+    (Date.now() - trampolineEventTime) / ((TRAMPOLINE_TIME * velocity) / V)
+  );
+  const trampolineY =
+    ((1 - 4 * pow(trampolineT - 0.5, 2)) * velocity * 1.5) / V;
 
   useThree(({ camera }) => {
     if (!init.current) {

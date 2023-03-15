@@ -4,7 +4,9 @@ import { SLOPE_TAN } from "config";
 import { trees } from "../models";
 
 export const Debris = () => {
-  const { debris } = useSelector(s => s.game);
+  const { debris, settings } = useSelector(s => s.game);
+  if (!settings.debris) return null;
+
   return (
     <group>
       {debris.map((d, i) => {

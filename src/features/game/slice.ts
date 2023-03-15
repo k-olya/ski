@@ -15,6 +15,7 @@ import {
   EXTRA_PLAYER_PADDING,
   CORRECT_PERCENT,
   SCORE_MULTIPLIER,
+  TRAMPOLINE_TIME,
 } from "config";
 import { trees } from "./models";
 import { multiply, multiply_reverse } from "config/quiz/multiply";
@@ -68,6 +69,8 @@ export interface GameState {
     v: number;
     density: number;
     reverse: boolean;
+    trampolines: boolean;
+    debris: boolean;
     quizes: {
       add: boolean;
       subtract: boolean;
@@ -131,7 +134,11 @@ const initialState: GameState = {
   trampolines: [
     {
       x: 3.3,
-      z: (-5.25 * SLOPE_LENGTH) / 6,
+      z: (-4.25 * SLOPE_LENGTH) / 6,
+    },
+    {
+      x: 10,
+      z: (-0.25 * SLOPE_LENGTH) / 6,
     },
   ],
   trampolineEventTime: 0,
@@ -141,6 +148,8 @@ const initialState: GameState = {
   boost: 0,
   settings: {
     "tutor-mode": false,
+    debris: true,
+    trampolines: true,
     v: 1,
     density: 1,
     reverse: false,
@@ -216,7 +225,9 @@ export const slice = createSlice({
     },
     toggleSetting: (
       state,
-      { payload }: PayloadAction<"tutor-mode" | "reverse">
+      {
+        payload,
+      }: PayloadAction<"tutor-mode" | "reverse" | "trampolines" | "debris">
     ) => {
       state.settings[payload] = !state.settings[payload];
     },
@@ -393,8 +404,7 @@ export const slice = createSlice({
               state.inARow = 0;
               state.shakes++;
             }
-            let flagx = 0,
-              text = "";
+            let text = "";
             if (state.gameState === "starting") {
               text = "СТАРТ";
             } else {
@@ -421,17 +431,22 @@ export const slice = createSlice({
                   typeof pool === "string" ? pool : pool[irand(pool.length)];
               }
             }
+            let flagx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
             while (flagHitTest({ x: flagx, z: flag.z }, state.playerX))
               flagx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
             return { text, x: flagx, z: -SLOPE_LENGTH };
           } else return { ...flag, z: flag.z + state.velocity * delta };
         });
 
+        const trampolineT =
+          (Date.now() - state.trampolineEventTime) /
+          ((TRAMPOLINE_TIME * state.velocity) / V);
+        const flying = clamp(trampolineT) === trampolineT;
         // debris
         const hitDebris = state.debris.find(d =>
           flagHitTest(d, state.playerX, 0.4)
         );
-        if (hitDebris) {
+        if (hitDebris && !flying && state.settings.debris) {
           if (state.gameState === "playing") {
             state.start = Date.now();
           }
@@ -443,14 +458,19 @@ export const slice = createSlice({
         state.debris = state.debris.map(d => {
           if (d.z > 0) {
             const dx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
-            return { modelIndex: irand(trees.length), x: dx, z: -SLOPE_LENGTH };
+            return {
+              modelIndex: irand(trees.length),
+              x: dx,
+              z: -SLOPE_LENGTH,
+            };
           } else return { ...d, z: d.z + state.velocity * delta };
         });
+
         // trampolines
         const hitTrampoline = state.trampolines.find(d =>
-          flagHitTest(d, state.playerX, 1)
+          flagHitTest(d, state.playerX, 1.25)
         );
-        if (hitTrampoline) {
+        if (hitTrampoline && !flying && state.settings.trampolines) {
           state.trampolineEventTime = Date.now();
         }
         state.trampolines = state.trampolines.map(d => {

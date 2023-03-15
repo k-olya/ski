@@ -17,7 +17,15 @@ import { mobile } from "app/mobile";
 export const Settings = () => {
   const dispatch = useDispatch();
   const { settings } = useSelector(s => s.game);
-  const { "tutor-mode": tutorMode, density, v, quizes, reverse } = settings;
+  const {
+    "tutor-mode": tutorMode,
+    density,
+    v,
+    quizes,
+    reverse,
+    debris,
+    trampolines,
+  } = settings;
 
   return (
     <div className="fixed top-0 w-full h-full p-4 flex justify-center items-center">
@@ -100,6 +108,19 @@ export const Settings = () => {
             <GiRabbit className="text-xl" />
           </div>
         </div>
+        <Checkbox
+          checked={debris}
+          className="mt-4"
+          onClick={() => dispatch(toggleSetting("debris"))}
+        >
+          препятствия
+        </Checkbox>
+        <Checkbox
+          checked={trampolines}
+          onClick={() => dispatch(toggleSetting("trampolines"))}
+        >
+          трамплины
+        </Checkbox>
 
         <Button
           className="text-2xl py-2 px-3 mx-auto mb-0 mt-auto"

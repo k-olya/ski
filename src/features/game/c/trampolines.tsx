@@ -3,7 +3,9 @@ import { BlockSnowSlopeHalf } from "../models/BlockSnowSlopeHalf";
 import { SLOPE_TAN } from "config";
 
 export const Trampolines = () => {
-  const { trampolines } = useSelector(s => s.game);
+  const { trampolines, settings } = useSelector(s => s.game);
+  if (!settings.trampolines) return null;
+
   return (
     <group>
       {trampolines.map((d, i) => {

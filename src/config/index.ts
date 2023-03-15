@@ -16,7 +16,7 @@ export const Vx = 5;
 export const Vboost = 21;
 export const Vslow = 4.5;
 export const SCORE_MULTIPLIER = 3200;
-export const TRAMPOLINE_TIME = 750;
+export const TRAMPOLINE_TIME = 650;
 
 export const GAME_CLOCK_MS = 14;
 export const CLOCK_DELTA = 0.001 * GAME_CLOCK_MS;
