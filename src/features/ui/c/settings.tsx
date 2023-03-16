@@ -17,7 +17,7 @@ import { mobile } from "app/mobile";
 
 export const Settings = () => {
   const dispatch = useDispatch();
-  const { settings } = useSelector((s) => s.game);
+  const { settings } = useSelector(s => s.game);
   const {
     "tutor-mode": tutorMode,
     density,
@@ -80,12 +80,12 @@ export const Settings = () => {
             <BsTreeFill className="" />
           </div>
           <Slider
-            min={mobile() ? 0.5 : 0.1}
-            max={mobile() ? 10.0 : 2.0}
-            step={mobile() ? 0.5 : 0.1}
+            min={mobile() ? 0.5 : 0.2}
+            max={mobile() ? 10.0 : 4.0}
+            step={mobile() ? 0.5 : 0.2}
             value={density}
             className="mx-3"
-            onChange={(v) => {
+            onChange={v => {
               dispatch(setNumberSetting({ setting: "density", value: v }));
             }}
           />
@@ -106,7 +106,7 @@ export const Settings = () => {
             step={0.25}
             value={v}
             className="mx-3"
-            onChange={(v) => {
+            onChange={v => {
               dispatch(setNumberSetting({ setting: "v", value: v }));
             }}
           />
