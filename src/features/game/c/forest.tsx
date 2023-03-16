@@ -28,18 +28,18 @@ export const Forest: FC<Props> = ({ position }) => {
     ticks,
     delta,
     settings: { density },
-  } = useSelector(s => s.game);
-  const DENSITY = density * (mobile() ? 20 : 60);
+  } = useSelector((s) => s.game);
+  const DENSITY = Math.round(density * (mobile() ? 8 : 60));
   const debris = useRef<ReactNode[]>([]);
   const sign = position[0] >= 0 ? 1 : -1;
   const positions = useRef<number[][]>([]);
 
   useEffect(() => {
-    debris.current = range(DENSITY).map(x => {
+    debris.current = range(DENSITY).map((x) => {
       const C = models[irand(models.length)];
       return <C />;
     });
-    positions.current = debris.current.map(x => [
+    positions.current = debris.current.map((x) => [
       rand(-1.5, 1.5),
       rand(-0.05, 0.0),
       rand(-3.5, 3.5),
@@ -50,8 +50,8 @@ export const Forest: FC<Props> = ({ position }) => {
   useEffect(() => {
     if (gameLoopActive && document.visibilityState === "visible") {
       ref.current
-        .filter(f => f)
-        .forEach(r => {
+        .filter((f) => f)
+        .forEach((r) => {
           const _r = r as unknown as Group;
           _r.position.z += delta * velocity;
           _r.position.y += delta * SLOPE_TAN * velocity;
@@ -68,7 +68,7 @@ export const Forest: FC<Props> = ({ position }) => {
         return (
           <group
             key={i}
-            ref={x => (ref.current[i] = x)}
+            ref={(x) => (ref.current[i] = x)}
             position={[
               positions.current[i][0],
               positions.current[i][1] +

@@ -18,9 +18,9 @@ const components: Partial<Record<UiScreen, FC>> = {
 export function Ui() {
   const dispatch = useDispatch();
   const { loaded, total } = useProgress();
-  const { screen } = useSelector(s => s.ui);
-  const { gameState } = useSelector(s => s.game);
-  const kb = useSelector(s => s.kb);
+  const { screen } = useSelector((s) => s.ui);
+  const { gameState } = useSelector((s) => s.game);
+  const kb = useSelector((s) => s.kb);
 
   useEffect(() => {
     if (kb.Escape) {

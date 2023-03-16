@@ -32,7 +32,7 @@ import { Trampolines } from "./trampolines";
 
 export const Scene = () => {
   const dispatch = useDispatch();
-  const kb = useSelector(s => s.kb);
+  const kb = useSelector((s) => s.kb);
   const {
     gameLoopActive,
     playerX,
@@ -43,8 +43,8 @@ export const Scene = () => {
     trampolineEventTime,
     trampolineVelocity,
     start,
-  } = useSelector(s => s.game);
-  const { screen } = useSelector(s => s.ui);
+  } = useSelector((s) => s.game);
+  const { screen } = useSelector((s) => s.ui);
   const init = useRef(false);
   const doc = useRef(document);
 

@@ -7,7 +7,7 @@ import { Controls } from "./controls";
 import { pow, sqrt } from "app/math";
 
 export const Game = () => {
-  const game = useSelector(s => s.game);
+  const game = useSelector((s) => s.game);
   const [shakeX, setShake] = useState(false);
   const [pulse, setPulse] = useState(false);
   useEffect(() => {
