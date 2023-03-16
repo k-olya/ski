@@ -29,7 +29,7 @@ export const Forest: FC<Props> = ({ position }) => {
     delta,
     settings: { density },
   } = useSelector(s => s.game);
-  const DENSITY = Math.round(density * (mobile() ? 8 : 25));
+  const DENSITY = Math.round(density * (mobile() ? 8 : 12));
   const debris = useRef<ReactNode[]>([]);
   const sign = position[0] >= 0 ? 1 : -1;
   const positions = useRef<number[][]>([]);
