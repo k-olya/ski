@@ -7,7 +7,6 @@ import {
   IoArrowUp,
   IoArrowDown,
 } from "react-icons/io5";
-import { GiRabbit, GiTurtle } from "react-icons/gi";
 
 export const Controls = () => (
   <div className={c({ hidden: !mobile() })}>
@@ -20,7 +19,7 @@ export const Controls = () => (
       opposite="ArrowUp"
       className="bottom-8 left-10 p-2"
     >
-      <GiTurtle className="h-8 w-8" />
+      <IoArrowDown className="h-8 w-8" />
     </TouchControl>
     <TouchControl kbKey="ArrowRight" className="bottom-28 right-4 p-4">
       <IoArrowForward className="h-16 w-16" />
@@ -31,7 +30,7 @@ export const Controls = () => (
       opposite="ArrowDown"
       className="bottom-8 right-10 p-2"
     >
-      <GiRabbit className="h-8 w-8" />
+      <IoArrowUp className="h-8 w-8" />
     </TouchControl>
   </div>
 );
