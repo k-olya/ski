@@ -3,6 +3,13 @@ export type KbState = { [k: string]: boolean };
 
 const initialState: KbState = {};
 
+export const preventedDefaultKeys = [
+  "AltLeft",
+  "AltRight",
+  "ShiftLeft",
+  "ShiftRight",
+];
+
 export const slice = createSlice({
   name: "kb",
   initialState,
