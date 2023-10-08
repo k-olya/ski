@@ -5,9 +5,10 @@ import { PauseButton } from "./pause-button";
 import { Timer } from "./timer";
 import { Controls } from "./controls";
 import { pow, sqrt } from "app/math";
+import { SoundButton } from "./sound-button";
 
 export const Game = () => {
-  const game = useSelector((s) => s.game);
+  const game = useSelector(s => s.game);
   const [shakeX, setShake] = useState(false);
   const [pulse, setPulse] = useState(false);
   useEffect(() => {
@@ -55,7 +56,10 @@ export const Game = () => {
           </p>
         </div>
       </div>
-      <PauseButton />
+      <div className="fixed top-2 right-2 md:top-4 md:right-4 space-y-2 md:space-y-4">
+        <PauseButton />
+        <SoundButton />
+      </div>
       <Controls />
     </div>
   );

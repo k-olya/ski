@@ -2,16 +2,17 @@ import { Plane, useTexture } from "@react-three/drei";
 
 const NAME = "alt";
 const EXT = "jpg";
+const ARR = [
+  `${NAME}_bk.${EXT}`,
+  `${NAME}_dn.${EXT}`,
+  `${NAME}_ft.${EXT}`,
+  `${NAME}_lf.${EXT}`,
+  `${NAME}_rt.${EXT}`,
+  `${NAME}_up.${EXT}`,
+];
 
 export const Skybox = () => {
-  const [bk, dn, ft, lf, rt, up] = useTexture([
-    `${NAME}_bk.${EXT}`,
-    `${NAME}_dn.${EXT}`,
-    `${NAME}_ft.${EXT}`,
-    `${NAME}_lf.${EXT}`,
-    `${NAME}_rt.${EXT}`,
-    `${NAME}_up.${EXT}`,
-  ]);
+  const [bk, dn, ft, lf, rt, up] = useTexture(ARR);
   return (
     <group scale={[200, 200, 200]}>
       <Plane
@@ -55,3 +56,6 @@ export const Skybox = () => {
     </group>
   );
 };
+
+// preload textures
+ARR.map(m => useTexture.preload(m));

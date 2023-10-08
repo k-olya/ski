@@ -29,10 +29,11 @@ import { subtract, sub_reverse } from "config/quiz/subtract";
 import { multiply, multiply_reverse } from "config/quiz/multiply";
 import { regions, regions_reverse } from "config/quiz/regions-russia";
 import { Trampolines } from "./trampolines";
+import { Music } from "features/sound/c/music";
 
 export const Scene = () => {
   const dispatch = useDispatch();
-  const kb = useSelector((s) => s.kb);
+  const kb = useSelector(s => s.kb);
   const {
     gameLoopActive,
     playerX,
@@ -43,8 +44,8 @@ export const Scene = () => {
     trampolineEventTime,
     trampolineVelocity,
     start,
-  } = useSelector((s) => s.game);
-  const { screen } = useSelector((s) => s.ui);
+  } = useSelector(s => s.game);
+  const { screen } = useSelector(s => s.ui);
   const init = useRef(false);
   const doc = useRef(document);
 

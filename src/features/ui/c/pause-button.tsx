@@ -12,10 +12,7 @@ export const PauseButton = () => {
     dispatch(pause());
   }, [dispatch]);
   return (
-    <Button
-      className="fixed top-2 md:top-4 right-2 md:right-4 p-4 text-4xl cursor-pointer"
-      onClick={cb}
-    >
+    <Button className="p-4 text-4xl cursor-pointer" onClick={cb}>
       <IoPause className="transform scale-x-125" />
     </Button>
   );

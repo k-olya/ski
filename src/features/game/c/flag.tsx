@@ -1,5 +1,7 @@
 import { FC } from "react";
+import { useLoader } from "@react-three/fiber";
 import { Box, Text } from "@react-three/drei";
+import { FileLoader } from "three";
 
 interface Props {
   color: string | number;
@@ -29,3 +31,5 @@ export const Flag: FC<Props> = ({ color, position, text }) => (
     </Box>
   </group>
 );
+
+useLoader.preload(FileLoader, "Roboto-Regular.ttf");
