@@ -70,6 +70,28 @@ export const Attributions = () => {
             <IoEarth />
           </a>
         </div>
+        <h2 className="text-xl mt-8">Звукорежиссер</h2>
+        <div className="mt-2 italic">
+          <a
+            href="https://soundcloud.com/jahlib"
+            target="_blank"
+            className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+          >
+            <span className="mr-1">jahlib</span>
+            <IoEarth />
+          </a>
+        </div>
+        <h2 className="text-xl mt-8">Музыкальная тема</h2>
+        <div className="mt-2 italic">
+          <a
+            href="https://pixabay.com/users/evgeny_bardyuzha-25235210"
+            target="_blank"
+            className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+          >
+            <span className="mr-1">Evgeny Bardyuzha - Password Infinity</span>
+            <IoEarth />
+          </a>
+        </div>
         <h2 className="text-xl mt-8">Иконки</h2>
         <div className="mt-2 mb-0 italic">
           <a

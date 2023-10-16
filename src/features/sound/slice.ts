@@ -16,14 +16,18 @@ export type SoundState = {
   sfxVolume: number;
   loading: SoundLoadingState;
   loaded: SoundLoadingState;
+  activeSfx: string | null;
+  activeSpeech: string | null;
 };
 
 const initialState: SoundState = {
   userInteracted: false,
   muted: true,
-  musicVolume: 0.1,
+  musicVolume: 1.0,
   speechVolume: 1.0,
-  sfxVolume: 0.5,
+  sfxVolume: 1.0,
+  activeSfx: null,
+  activeSpeech: null,
   loading: {
     ui: false,
     add: false,
@@ -67,10 +71,23 @@ export const slice = createSlice({
       state.loading[payload] = false;
       state.loaded[payload] = true;
     },
+    setActiveSfx: (state, { payload }: PayloadAction<string | null>) => {
+      state.activeSfx = payload;
+    },
+    setActiveSpeech: (state, { payload }: PayloadAction<string | null>) => {
+      state.activeSpeech = payload;
+    },
   },
 });
 
-export const { setUserInteracted, mute, unmute, startLoading, finishLoading } =
-  slice.actions;
+export const {
+  setUserInteracted,
+  mute,
+  unmute,
+  startLoading,
+  finishLoading,
+  setActiveSpeech,
+  setActiveSfx,
+} = slice.actions;
 
 export default slice.reducer;

@@ -9,33 +9,54 @@ import sub from "config/sound/sub-neutral.json";
 import numbers from "config/sound/numbers-good.json";
 import mul from "config/sound/mul-good.json";
 import ui from "config/sound/ui-jahlib.json";
-import { SoundLoadingState, finishLoading, startLoading } from "./slice";
+import {
+  SoundLoadingState,
+  finishLoading,
+  setActiveSfx,
+  setActiveSpeech,
+  startLoading,
+} from "./slice";
 import { AppDispatch } from "app/store";
 
 const sounds = { add, sub, numbers, mul, ui };
 
+const speechLookupMap = new Map<string, keyof SoundLoadingState>();
+
+for (let library in sounds) {
+  if (library === "ui") continue;
+  const l = library as unknown as keyof SoundLoadingState;
+  for (let sound in sounds[l].sprite) {
+    speechLookupMap.set(sound, l);
+  }
+}
+
 const loadHowl = (
   howler: Record<string, Howl>,
   dispatch: AppDispatch,
-  name: keyof SoundLoadingState
+  name: keyof SoundLoadingState,
+  type: "speech" | "sfx" = "speech"
 ) => {
   howler[name] = new Howl(sounds[name] as unknown as HowlOptions);
   howler[name].on("load", () => {
     howler[name].volume(1.0);
     dispatch(finishLoading(name));
   });
-  howler[name].on("stop", e => {
-    console.log(e);
-    // dispatch(setStopped(name));
+  howler[name].on("end", e => {
+    dispatch(type === "speech" ? setActiveSpeech("") : setActiveSfx(""));
   });
   dispatch(startLoading(name));
 };
 
 export const Sound: FC = () => {
   const dispatch = useDispatch();
-  const { userInteracted, musicVolume, muted, loaded } = useSelector(
-    s => s.sound
-  );
+  const {
+    userInteracted,
+    musicVolume,
+    muted,
+    loaded,
+    activeSpeech,
+    activeSfx,
+  } = useSelector(s => s.sound);
   const { reverse, quizes } = useSelector(s => s.game.settings);
   const howlerRef = useRef<Record<string, Howl>>({});
 
@@ -55,7 +76,7 @@ export const Sound: FC = () => {
         loadHowl(howler, dispatch, "mul");
       }
       if (!howler.ui) {
-        loadHowl(howler, dispatch, "ui");
+        loadHowl(howler, dispatch, "ui", "sfx");
       }
     }
     console.log("sound update", howlerRef.current);
@@ -69,13 +90,31 @@ export const Sound: FC = () => {
   ]);
 
   useEffect(() => {
-    if (howlerRef.current.ui) {
-      howlerRef.current.ui.play("UI_Confirm_Major");
-    }
+    // if (howlerRef.current.ui) {
+    //   howlerRef.current.ui.play("UI_Confirm_Major");
+    // }
     // if (howlerRef.current.mul) {
     //   howlerRef.current.mul.play("2x2");
     // }
   }, [loaded.add, loaded.mul, loaded.numbers, loaded.sub, loaded.ui]);
+
+  // speech
+  useEffect(() => {
+    if (activeSpeech) {
+      const l = speechLookupMap.get(activeSpeech);
+      if (l) {
+        howlerRef.current[l].play(activeSpeech);
+      }
+    }
+    // console.log("active speech", activeSpeech);
+  }, [activeSpeech]);
+  // sfx
+  useEffect(() => {
+    if (activeSfx && howlerRef.current.ui) {
+      howlerRef.current.ui.play(activeSfx);
+    }
+  }, [activeSfx]);
+
   return null;
 };
 

@@ -27,7 +27,7 @@ export const Music = () => {
   });
   const data = useLoader(
     AudioLoader,
-    "./evgeny-bardyuzha-password-infinity.mp3"
+    "./evgeny-bardyuzha-password-infinity_j_pogromche.mp3"
   );
   useEffect(() => {
     if (listener.current /* && ref.current */ && !init.current) {
@@ -54,4 +54,7 @@ export const Music = () => {
   return <></>; //<group ref={ref}></group>; //<positionalAudio ref={sound} args={[listener]} />;
 };
 
-useLoader.preload(AudioLoader, "./evgeny-bardyuzha-password-infinity.mp3");
+useLoader.preload(
+  AudioLoader,
+  "./evgeny-bardyuzha-password-infinity_j_pogromche.mp3"
+);

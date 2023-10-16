@@ -99,7 +99,7 @@ export const Scene = () => {
 
   return (
     <>
-      <ambientLight intensity={0.25} />
+      <ambientLight intensity={0.3} />
       <pointLight position={[2.5, 7.5, 2]} intensity={0.5} />
       <group
         position={[

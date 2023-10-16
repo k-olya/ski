@@ -1,24 +1,39 @@
 import { useState, useEffect } from "react";
 import c from "classnames";
-import { useSelector } from "app/hooks";
+import { useDispatch, useSelector } from "app/hooks";
 import { PauseButton } from "./pause-button";
 import { Timer } from "./timer";
 import { Controls } from "./controls";
 import { pow, sqrt } from "app/math";
 import { SoundButton } from "./sound-button";
+import { setActiveSfx, setActiveSpeech } from "features/sound/slice";
 
 export const Game = () => {
   const game = useSelector(s => s.game);
+  const dispatch = useDispatch();
   const [shakeX, setShake] = useState(false);
   const [pulse, setPulse] = useState(false);
+
+  // wrong answer effect
   useEffect(() => {
     setShake(Boolean(game.shakes));
+    dispatch(setActiveSfx("UI_Error_01"));
     setTimeout(() => setShake(false), 300);
   }, [game.shakes, setShake]);
+
+  // right answer effect
   useEffect(() => {
     setPulse(Boolean(game.score));
+    dispatch(setActiveSfx("UI_Pause_01"));
     setTimeout(() => setPulse(false), 300);
   }, [game.score, setPulse]);
+
+  // question change sfx
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(setActiveSpeech(game.activeQuestion[0].replace("×", "x")));
+    }, 300);
+  }, [dispatch, game.activeQuestion[0]]);
 
   return (
     <div className="fixed top-0 left-0 w-screen h-screen">
