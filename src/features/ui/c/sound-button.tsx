@@ -18,7 +18,7 @@ export const SoundButton = () => {
     dispatch(mute(!muted));
   }, [dispatch, muted]);
   return (
-    <Button className="p-4 text-4xl cursor-pointer" onClick={cb}>
+    <Button className="p-2 text-3xl cursor-pointer" onClick={cb}>
       {!muted ? <IoVolumeHigh /> : <IoVolumeMute className="text-yellow-300" />}
     </Button>
   );

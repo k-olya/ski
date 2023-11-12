@@ -7,6 +7,7 @@ import { Controls } from "./controls";
 import { pow, sqrt } from "app/math";
 import { SoundButton } from "./sound-button";
 import { setActiveSfx, setActiveSpeech } from "features/sound/slice";
+import { FullscreenButton } from "./fullscreen-button";
 
 export const Game = () => {
   const game = useSelector(s => s.game);
@@ -40,7 +41,7 @@ export const Game = () => {
       <div className="fixed w-full flex top-2 md:top-4 justify-center items-center">
         <div
           className={c(
-            "bg-black text-white bg-opacity-25 rounded px-2 y-1 md:px-3 md:py-2 text-lg md:w-64",
+            "bg-black text-white bg-opacity-25 rounded px-2 py-1 md:px-3 md:py-2 text-lg md:w-64",
             { shakeX }
           )}
         >
@@ -71,9 +72,10 @@ export const Game = () => {
           </p>
         </div>
       </div>
-      <div className="fixed top-2 right-2 md:top-4 md:right-4 space-y-2 md:space-y-4">
+      <div className="fixed top-2 right-2 md:top-4 md:right-4 space-y-2">
         <PauseButton />
         <SoundButton />
+        <FullscreenButton />
       </div>
       <Controls />
     </div>

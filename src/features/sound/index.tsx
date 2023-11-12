@@ -100,9 +100,9 @@ export const Sound: FC = () => {
 
   // speech
   useEffect(() => {
-    if (activeSpeech) {
+    if (activeSpeech && !muted) {
       const l = speechLookupMap.get(activeSpeech);
-      if (l) {
+      if (l && howlerRef.current[l]) {
         howlerRef.current[l].play(activeSpeech);
       }
     }
@@ -110,7 +110,7 @@ export const Sound: FC = () => {
   }, [activeSpeech]);
   // sfx
   useEffect(() => {
-    if (activeSfx && howlerRef.current.ui) {
+    if (activeSfx && !muted && howlerRef.current.ui) {
       howlerRef.current.ui.play(activeSfx);
     }
   }, [activeSfx]);

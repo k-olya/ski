@@ -12,6 +12,7 @@ import {
   IoArrowDown,
 } from "react-icons/io5";
 import { SoundButton } from "./sound-button";
+import { FullscreenButton } from "./fullscreen-button";
 
 export const Main = () => {
   const dispatch = useDispatch();
@@ -23,9 +24,10 @@ export const Main = () => {
   }, [gameState, dispatch]);
   return (
     <div className="fixed">
-      <div className="fixed top-2 right-2 md:top-4 md:right-4 space-y-2 md:space-y-4">
+      <div className="fixed top-2 right-2 md:top-4 md:right-4 space-y-2">
         <PauseButton />
         <SoundButton />
+        <FullscreenButton />
       </div>
       <div className="fixed bg-black text-white bg-opacity-25 top-2 left-2 md:top-4 md:left-4 rounded px-3 py-1 text-lg w-48 sm:w-64 md:w-96">
         <p>Собери флаг СТАРТ для начала игры</p>

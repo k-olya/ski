@@ -113,6 +113,16 @@ export const Attributions = () => {
             <IoEarth />
           </a>
         </div>
+        <div className="mt-1 italic">
+          <a
+            href="https://github.com/tailwindlabs/heroicons"
+            target="_blank"
+            className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+          >
+            <span className="mr-1">heroicons 2</span>
+            <IoEarth />
+          </a>
+        </div>
         <div className="mt-16 md:mt-auto mb-8 italic">Спасибо за игру ♥</div>
         <div className="flex flex-col md:flex-row-reverse mt-auto justify-end">
           <Button
