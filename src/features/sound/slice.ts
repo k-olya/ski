@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { clamp } from "app/math";
 
 export type SoundLoadingState = {
   ui: boolean;
@@ -53,7 +54,7 @@ export const slice = createSlice({
     },
     mute: (state, { payload }: PayloadAction<boolean>) => {
       state.userInteracted = true;
-      state.muted = payload;
+      state.muted = payload || false;
     },
     unmute: state => {
       state.muted = false;
@@ -77,6 +78,15 @@ export const slice = createSlice({
     setActiveSpeech: (state, { payload }: PayloadAction<string | null>) => {
       state.activeSpeech = payload;
     },
+    setMusicVolume: (state, { payload }: PayloadAction<number>) => {
+      state.musicVolume = clamp(payload);
+    },
+    setSfxVolume: (state, { payload }: PayloadAction<number>) => {
+      state.sfxVolume = clamp(payload);
+    },
+    setSpeechVolume: (state, { payload }: PayloadAction<number>) => {
+      state.speechVolume = clamp(payload);
+    },
   },
 });
 
@@ -88,6 +98,9 @@ export const {
   finishLoading,
   setActiveSpeech,
   setActiveSfx,
+  setMusicVolume,
+  setSpeechVolume,
+  setSfxVolume,
 } = slice.actions;
 
 export default slice.reducer;

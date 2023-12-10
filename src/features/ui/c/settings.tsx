@@ -11,13 +11,23 @@ import {
   setNumberSetting,
 } from "features/game/slice";
 import { BsTreeFill } from "react-icons/bs";
-import { IoSpeedometerOutline } from "react-icons/io5";
+import {
+  IoSpeedometerOutline,
+  IoVolumeHigh,
+  IoVolumeMute,
+} from "react-icons/io5";
 import { GiRabbit, GiTurtle } from "react-icons/gi";
 import { mobile } from "app/mobile";
+import {
+  setMusicVolume,
+  setSfxVolume,
+  setSpeechVolume,
+} from "features/sound/slice";
 
 export const Settings = () => {
   const dispatch = useDispatch();
   const { settings } = useSelector(s => s.game);
+  const { musicVolume, speechVolume, sfxVolume } = useSelector(s => s.sound);
   const {
     "tutor-mode": tutorMode,
     density,
@@ -67,13 +77,13 @@ export const Settings = () => {
           иногда менять местами примеры и ответы
         </Checkbox>
 
-        {/* <h2 className="text-xl mt-2">Показывать правильные ответы</h2>
+        <h2 className="text-xl mt-2">Показывать правильные ответы</h2>
         <Checkbox
           checked={tutorMode}
           onClick={() => dispatch(toggleSetting("tutor-mode"))}
         >
           {tutorMode ? "показывать зелеными флагами" : "не показывать"}
-  </Checkbox>*/}
+        </Checkbox>
         <h2 className="text-xl mt-2 mb-1">Количество деревьев</h2>
         <div className="flex w-full justify-between items-center">
           <div>
@@ -112,6 +122,63 @@ export const Settings = () => {
           />
           <div className="">
             <GiRabbit className="text-xl" />
+          </div>
+        </div>
+        <h2 className="text-xl mt-4 mb-1">Громкость музыки</h2>
+        <div className="flex w-full justify-between items-center">
+          <div>
+            <IoVolumeMute className="text-xl" />
+          </div>
+          <Slider
+            min={0}
+            max={1}
+            step={0.01}
+            value={musicVolume}
+            className="mx-3"
+            onChange={v => {
+              dispatch(setMusicVolume(v));
+            }}
+          />
+          <div className="">
+            <IoVolumeHigh className="text-xl" />
+          </div>
+        </div>
+        <h2 className="text-xl mt-2 mb-1">Громкость речи</h2>
+        <div className="flex w-full justify-between items-center">
+          <div>
+            <IoVolumeMute className="text-xl" />
+          </div>
+          <Slider
+            min={0}
+            max={1}
+            step={0.01}
+            value={speechVolume}
+            className="mx-3"
+            onChange={v => {
+              dispatch(setSpeechVolume(v));
+            }}
+          />
+          <div className="">
+            <IoVolumeHigh className="text-xl" />
+          </div>
+        </div>
+        <h2 className="text-xl mt-2 mb-1">Громкость эффектов</h2>
+        <div className="flex w-full justify-between items-center">
+          <div>
+            <IoVolumeMute className="text-xl" />
+          </div>
+          <Slider
+            min={0}
+            max={1}
+            step={0.01}
+            value={sfxVolume}
+            className="mx-3"
+            onChange={v => {
+              dispatch(setSfxVolume(v));
+            }}
+          />
+          <div className="">
+            <IoVolumeHigh className="text-xl" />
           </div>
         </div>
         <Checkbox
