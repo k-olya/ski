@@ -47,23 +47,44 @@ export const Forest: FC<Props> = ({ position }) => {
   }, [DENSITY]);
 
   const ref = useRef<(Group | null)[]>([]);
+  const group = useRef<Group>(null);
+  // useEffect(() => {
+  //   if (gameLoopActive && document.visibilityState === "visible") {
+  //     ref.current
+  //       .filter(f => f)
+  //       .forEach(r => {
+  //         const _r = r as unknown as Group;
+  //         _r.position.z += delta * velocity;
+  //         _r.position.y += delta * SLOPE_TAN * velocity;
+  //         if (_r.position.z > 0) {
+  //           _r.position.z -= SLOPE_LENGTH;
+  //           _r.position.y -= SLOPE_LENGTH * SLOPE_TAN;
+  //         }
+  //       });
+  //   }
+  // }, [gameLoopActive, velocity, ticks, delta]);
   useEffect(() => {
-    if (gameLoopActive && document.visibilityState === "visible") {
-      ref.current
-        .filter(f => f)
-        .forEach(r => {
-          const _r = r as unknown as Group;
-          _r.position.z += delta * velocity;
-          _r.position.y += delta * SLOPE_TAN * velocity;
-          if (_r.position.z > 0) {
-            _r.position.z -= SLOPE_LENGTH;
-            _r.position.y -= SLOPE_LENGTH * SLOPE_TAN;
-          }
-        });
+    if (
+      gameLoopActive &&
+      document.visibilityState === "visible" &&
+      group.current
+    ) {
+      const g = group.current;
+      g.position.z += delta * velocity;
+      g.position.y += delta * SLOPE_TAN * velocity;
+      if (g.position.z > SLOPE_LENGTH) {
+        g.position.z -= SLOPE_LENGTH * 2;
+        g.position.y -= SLOPE_LENGTH * 2 * SLOPE_TAN;
+      }
     }
   }, [gameLoopActive, velocity, ticks, delta]);
+  useEffect(() => {
+    if (group.current) {
+      group.current.position.set(...position);
+    }
+  }, []);
   return (
-    <group position={position}>
+    <group position={position} ref={group}>
       {debris.current.map((d, i) => {
         return (
           <group

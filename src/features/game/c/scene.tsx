@@ -22,6 +22,8 @@ import {
   TRAMPOLINE_TIME,
   Vx,
   V,
+  SLOPE_LENGTH,
+  SLOPE_TAN,
 } from "config";
 
 import { add } from "config/quiz/add";
@@ -119,10 +121,22 @@ export const Scene = () => {
         <Flags />
         <Debris />
         <Trampolines />
-        <Forest position={[6.5, 1.35, 2]} />
-        <Forest position={[9.5, 3.15, 2]} />
+        {/* <Forest position={[6.5, 1.15, 2]} /> */}
+        {/* <Forest
+          position={[6.5, 1.15 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
+        /> */}
+        {/* <Forest position={[9.5, 3.05, 2]} /> */}
+        {/* <Forest
+          position={[-6.5, 1.15 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
+        /> */}
         <Forest position={[-6.5, 1.35, 2]} />
-        <Forest position={[-9.5, 3.15, 2]} />
+        <Forest
+          position={[-9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
+        />
+        <Forest position={[6.5, 1.35, 2]} />
+        <Forest
+          position={[9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
+        />
         <group
           rotation={[
             -SLOPE_ANGLE,
