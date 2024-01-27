@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
-import { PointerLockControls, useGLTF } from "@react-three/drei";
+import { Instance, PointerLockControls, useGLTF } from "@react-three/drei";
 import { useInterval } from "app/interval";
 import { useSelector, useDispatch } from "app/hooks";
 import { abs, clamp, lerp, PI, pow } from "app/math";
@@ -32,6 +32,7 @@ import { multiply, multiply_reverse } from "config/quiz/multiply";
 import { regions, regions_reverse } from "config/quiz/regions-russia";
 import { Trampolines } from "./trampolines";
 import { Music } from "features/sound/c/music";
+import { InstancedTree } from "./instanced-tree";
 
 export const Scene = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ export const Scene = () => {
     boost,
     trampolineEventTime,
     trampolineVelocity,
+    settings: { density },
     start,
   } = useSelector(s => s.game);
   const { screen } = useSelector(s => s.ui);
@@ -129,13 +131,19 @@ export const Scene = () => {
         {/* <Forest
           position={[-6.5, 1.15 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
         /> */}
-        <Forest position={[-6.5, 1.35, 2]} />
+
+        {/* <Forest position={[-6.5, 1.35, 2]} />
         <Forest
           position={[-9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
         />
         <Forest position={[6.5, 1.35, 2]} />
         <Forest
           position={[9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
+      />*/}
+        <InstancedTree
+          position={[6.5, 1.35, 2]}
+          gameLoopActive={true}
+          density={density}
         />
         <group
           rotation={[
@@ -167,7 +175,7 @@ export const Scene = () => {
             ]}
           />
         </group>
-        {/*<PointerLockControls selector="canvas" />*/}
+        <PointerLockControls selector="canvas" />
       </group>
     </>
   );

@@ -1,4 +1,4 @@
-import { MeshPhongMaterial } from "three";
+import { MeshPhongMaterial, ShaderLib } from "three";
 
 export const snow = new MeshPhongMaterial({ color: "lightgray" });
 export const ski = new MeshPhongMaterial({
