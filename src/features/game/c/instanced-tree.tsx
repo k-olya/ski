@@ -48,11 +48,14 @@ interface Props {
 
 const temp = new Object3D();
 
-export const InstancedTree: FC<Props> = ({
-  position,
-  gameLoopActive,
-  density,
-}) => {
+export const InstancedTree: FC<Props> = ({ position }) => {
+  const {
+    gameLoopActive,
+    velocity,
+    ticks,
+    delta,
+    settings: { density },
+  } = useSelector(s => s.game);
   const debris = useRef<ReactNode[]>([]);
   const sign = position[0] >= 0 ? 1 : -1;
   const positions = useRef<number[][]>([]);
@@ -83,69 +86,24 @@ export const InstancedTree: FC<Props> = ({
     }
   }, [DENSITY]);
 
-  // add onbeforecompile hook to shader
-  useEffect(() => {
-    Object.values(materials).forEach(material => {
-      material.uniforms = { time: { value: 0 } };
-      material.onBeforeCompile = shader => {
-        shader.uniforms.time = { value: 0 };
-        shader.vertexShader = shader.vertexShader.replace(
-          "#include <common>",
-          `
-          #include <common>
-          uniform float time;
-uniform float opacity;
-        `
-        );
-        shader.vertexShader = shader.vertexShader.replace(
-          "#include <project_vertex>",
-          `
-         
- vec4 mvPosition = vec4( transformed, 1.0 );
-
-#ifdef USE_BATCHING
-
-	mvPosition = batchingMatrix * mvPosition;
-
-#endif
-
-#ifdef USE_INSTANCING
-          mat4 _instanceMatrix = instanceMatrix;
-          _instanceMatrix[3][2] += -${SLOPE_LENGTH.toFixed(
-            1
-          )} + mod(opacity * 100., ${SLOPE_LENGTH.toFixed(1)});
-	mvPosition = _instanceMatrix * mvPosition;
-
-#endif
-
-mvPosition = modelViewMatrix * mvPosition;
-
-
-gl_Position = projectionMatrix * mvPosition;
-        `
-        );
-      };
-    });
-  }, []);
-
   const ref = useRef<InstancedMesh>(null);
   const ref2 = useRef<InstancedMesh>(null);
   const group = useRef<Group>(null);
-  const time = useRef(0);
-  useFrame((three, delta) => {
+  useEffect(() => {
     if (
       gameLoopActive &&
       document.visibilityState === "visible" &&
       group.current
     ) {
-      time.current += delta;
-      Object.values(materials).forEach(material => {
-        // material.uniforms.time.value = time.current;
-        material.opacity = time.current;
-        material.uniformsNeedUpdate = true;
-      });
+      const g = group.current;
+      g.position.z += delta * velocity;
+      g.position.y += delta * SLOPE_TAN * velocity;
+      if (g.position.z > SLOPE_LENGTH) {
+        g.position.z -= SLOPE_LENGTH * 2;
+        g.position.y -= SLOPE_LENGTH * 2 * SLOPE_TAN;
+      }
     }
-  });
+  }, [gameLoopActive, velocity, ticks, delta]);
   useEffect(() => {
     if (group.current) {
       group.current.position.set(...position);
