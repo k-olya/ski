@@ -46,6 +46,7 @@ export const Scene = () => {
     boost,
     trampolineEventTime,
     trampolineVelocity,
+    steeringWheelPosition,
     settings: { fastTrees },
     start,
   } = useSelector(s => s.game);
@@ -168,7 +169,10 @@ export const Scene = () => {
             position={[-0.15, -0.31, 0.5 + steering * 0.2]}
             rotation={[
               0,
-              0.75 * Vx * Math.atan(clamp(steering * 2, -1, 1) / velocity),
+              0.75 *
+                Vx *
+                steeringWheelPosition *
+                Math.atan(clamp(steering * 2, -1, 1) / velocity),
               0,
             ]}
           />
@@ -176,7 +180,10 @@ export const Scene = () => {
             position={[0.15, -0.31, 0.5 - steering * 0.2]}
             rotation={[
               0,
-              0.75 * Vx * Math.atan(clamp(steering * 2, -1, 1) / velocity),
+              0.75 *
+                Vx *
+                steeringWheelPosition *
+                Math.atan(clamp(steering * 2, -1, 1) / velocity),
               0,
             ]}
           />

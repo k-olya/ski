@@ -13,7 +13,9 @@ interface Props {
 
 const getUpdate = (
   coords: RefObject<{ x: number; y: number }>,
-  dispatch: Function
+  dispatch: Function,
+  top: number,
+  bottom: number
 ) => {
   if (coords.current) {
     const update: { [k: string]: any } = {};
@@ -24,14 +26,11 @@ const getUpdate = (
       update["ArrowLeft"] = false;
       update["ArrowRight"] = true;
     }
-    if (
-      coords.current.y < (3 * window.innerHeight) / 5 &&
-      coords.current.y > (2 * window.innerHeight) / 5
-    ) {
+    if (coords.current.y < top) {
       // up
       update["ArrowUp"] = true;
       update["ArrowDown"] = false;
-    } else if (coords.current.y > (4 * window.innerHeight) / 5) {
+    } else if (coords.current.y > bottom) {
       // down
       update["ArrowUp"] = false;
       update["ArrowDown"] = true;
@@ -60,6 +59,8 @@ export const TouchJoystick: FC<Props> = ({ className }) => {
   const ref = useRef<HTMLDivElement>(null);
   const ball = useRef<HTMLDivElement>(null);
   const touching = useRef(false);
+  const top = useRef(0);
+  const bottom = useRef(0);
   const coords = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const keyDown = kb["ArrowLeft"] || kb["ArrowRight"];
 
@@ -79,7 +80,11 @@ export const TouchJoystick: FC<Props> = ({ className }) => {
         x: event.touches[0].clientX,
         y: event.touches[0].clientY,
       };
-      updateKb(getUpdate(coords, dispatch));
+      // @ts-ignore
+      top.current = event.target.offsetTop;
+      // @ts-ignore
+      bottom.current = top.current + event.target.offsetHeight;
+      updateKb(getUpdate(coords, dispatch, top.current, bottom.current));
       if (ball.current) {
         ball.current.style.left = `${coords.current.x}px`;
         ball.current.style.top = `${coords.current.y}px`;
@@ -97,7 +102,7 @@ export const TouchJoystick: FC<Props> = ({ className }) => {
           y: event.touches[0].clientY,
         };
 
-        updateKb(getUpdate(coords, dispatch));
+        updateKb(getUpdate(coords, dispatch, top.current, bottom.current));
 
         ball.current.style.left = `${coords.current.x}px`;
         ball.current.style.top = `${coords.current.y}px`;
