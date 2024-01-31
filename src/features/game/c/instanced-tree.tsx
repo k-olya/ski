@@ -58,7 +58,7 @@ export const InstancedTree: FC<Props> = ({ position }) => {
   const sign = position[0] >= 0 ? 1 : -1;
   const positions = useRef<number[][]>([]);
   const { nodes, materials } = useGLTF("treeHolidayPine.glb") as GLTFResult;
-  const DENSITY = 2 * Math.round(density * (mobile() ? 8 : 24));
+  const DENSITY = 2 * Math.round(density * (mobile() ? 8 : 16));
 
   useEffect(() => {
     for (let x of range(DENSITY)) {

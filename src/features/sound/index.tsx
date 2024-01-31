@@ -52,6 +52,8 @@ export const Sound: FC = () => {
   const {
     userInteracted,
     musicVolume,
+    sfxVolume,
+    speechVolume,
     muted,
     loaded,
     activeSpeech,
@@ -114,6 +116,21 @@ export const Sound: FC = () => {
       howlerRef.current.ui.play(activeSfx);
     }
   }, [activeSfx]);
+  useEffect(() => {
+    if (howlerRef.current.ui) {
+      howlerRef.current.ui.volume(sfxVolume);
+    }
+    if (howlerRef.current.sfx) {
+      howlerRef.current.sfx.volume(sfxVolume);
+    }
+  }, [sfxVolume]);
+  useEffect(() => {
+    ["add", "sub", "mul", "numbers"].forEach(l => {
+      if (howlerRef.current[l]) {
+        howlerRef.current[l].volume(speechVolume);
+      }
+    });
+  }, [speechVolume]);
 
   return null;
 };

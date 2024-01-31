@@ -156,7 +156,7 @@ const initialState: GameState = {
     debris: true,
     trampolines: true,
     v: 1,
-    density: 1,
+    density: 2,
     fastTrees: true,
     reverse: false,
     quizes: {
