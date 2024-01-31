@@ -4,12 +4,17 @@ import { updateKb } from "features/kb/slice";
 import { useEventListener } from "app/event-listener";
 import c from "classnames";
 import ReactDOM from "react-dom";
+import { clamp } from "app/math";
+import { setSteeringWheelPosition } from "features/game/slice";
 
 interface Props {
   className: string;
 }
 
-const getUpdate = (coords: RefObject<{ x: number; y: number }>) => {
+const getUpdate = (
+  coords: RefObject<{ x: number; y: number }>,
+  dispatch: Function
+) => {
   if (coords.current) {
     const update: { [k: string]: any } = {};
     if (coords.current.x < window.innerWidth / 2) {
@@ -35,7 +40,16 @@ const getUpdate = (coords: RefObject<{ x: number; y: number }>) => {
       update["ArrowUp"] = false;
       update["ArrowDown"] = false;
     }
-    return update;
+    const steeringDivisor = 6;
+    const offsetX = clamp(
+      Math.abs(coords.current.x - window.innerWidth / 2),
+      0,
+      window.innerWidth / steeringDivisor
+    );
+    const normalizedOffset = offsetX / (window.innerWidth / steeringDivisor);
+    // console.log(normalizedOffset);
+    dispatch(setSteeringWheelPosition(normalizedOffset));
+    dispatch(updateKb(update));
   }
   return {};
 };
@@ -65,7 +79,7 @@ export const TouchJoystick: FC<Props> = ({ className }) => {
         x: event.touches[0].clientX,
         y: event.touches[0].clientY,
       };
-      dispatch(updateKb(getUpdate(coords)));
+      updateKb(getUpdate(coords, dispatch));
       if (ball.current) {
         ball.current.style.left = `${coords.current.x}px`;
         ball.current.style.top = `${coords.current.y}px`;
@@ -83,7 +97,7 @@ export const TouchJoystick: FC<Props> = ({ className }) => {
           y: event.touches[0].clientY,
         };
 
-        dispatch(updateKb(getUpdate(coords)));
+        updateKb(getUpdate(coords, dispatch));
 
         ball.current.style.left = `${coords.current.x}px`;
         ball.current.style.top = `${coords.current.y}px`;

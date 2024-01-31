@@ -52,6 +52,7 @@ export interface GameState {
   Xvelocity: number;
   distance: number;
   steering: number;
+  steeringWheelPosition: number;
   score: number;
   inARow: number;
   shakes: number;
@@ -91,6 +92,7 @@ const initialState: GameState = {
   Xvelocity: 0,
   distance: 0,
   steering: 0,
+  steeringWheelPosition: 1,
   score: 0,
   inARow: 0,
   shakes: 0,
@@ -298,6 +300,9 @@ export const slice = createSlice({
       state.gameLoopActive = true;
     },
     reset: state => initialState,
+    setSteeringWheelPosition: (state, { payload }: PayloadAction<number>) => {
+      state.steeringWheelPosition = payload;
+    },
     tick: (
       state,
       { payload }: PayloadAction<{ delta: number; kb: KbState }>
@@ -351,6 +356,7 @@ export const slice = createSlice({
           state.playerX +
             (gravity +
               Vx *
+                state.steeringWheelPosition *
                 (1 - extraPosition) *
                 delta *
                 (Number(controls.ArrowLeft || 0) -
@@ -503,6 +509,7 @@ export const {
   toggleSetting,
   toggleQuizSetting,
   setNumberSetting,
+  setSteeringWheelPosition,
 } = slice.actions;
 
 export default slice.reducer;
