@@ -11,9 +11,9 @@ import {
 
 export const Controls = () => (
   <div className={c({ hidden: !mobile() })}>
-    {/* <TouchControl kbKey="ArrowLeft" className="bottom-28 left-4 p-4">
+    <TouchControl kbKey="ArrowLeft" className="bottom-28 left-4 p-4">
       <IoArrowBack className="h-16 w-16" />
-    </TouchControl> */}
+    </TouchControl>
     <TouchControl
       toggle
       kbKey="ArrowDown"
@@ -22,10 +22,10 @@ export const Controls = () => (
     >
       <IoArrowDown className="h-8 w-8" />
     </TouchControl>
-    {/* <TouchControl kbKey="ArrowRight" className="bottom-28 right-4 p-4">
+    <TouchControl kbKey="ArrowRight" className="bottom-28 right-4 p-4">
       <IoArrowForward className="h-16 w-16" />
-    </TouchControl> */}
-    <TouchJoystick className="" />
+    </TouchControl>
+    {/* <TouchJoystick className="" /> */}
     <TouchControl
       toggle
       kbKey="ArrowUp"
