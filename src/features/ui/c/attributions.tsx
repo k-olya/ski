@@ -88,7 +88,9 @@ export const Attributions = () => {
             target="_blank"
             className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
           >
-            <span className="mr-1">Evgeny Bardyuzha - Password Infinity</span>
+            <span className="mr-1 text-center">
+              Evgeny Bardyuzha - Password Infinity
+            </span>
             <IoEarth />
           </a>
         </div>

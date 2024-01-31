@@ -42,8 +42,6 @@ type GLTFResult = GLTF & {
 
 interface Props {
   position: [number, number, number];
-  gameLoopActive: boolean;
-  density: number;
 }
 
 const temp = new Object3D();
@@ -60,11 +58,11 @@ export const InstancedTree: FC<Props> = ({ position }) => {
   const sign = position[0] >= 0 ? 1 : -1;
   const positions = useRef<number[][]>([]);
   const { nodes, materials } = useGLTF("treeHolidayPine.glb") as GLTFResult;
-  const DENSITY = Math.round(density * (mobile() ? 8 : 24));
+  const DENSITY = 2 * Math.round(density * (mobile() ? 8 : 24));
 
   useEffect(() => {
     for (let x of range(DENSITY)) {
-      const p0 = rand(-1.5, 1.5);
+      const p0 = rand(-3.0, 3.0);
       const p2 = rand(-3.5, 3.5);
       const p1 = rand(-0.05, 0.0);
       temp.position.set(
@@ -75,51 +73,79 @@ export const InstancedTree: FC<Props> = ({ position }) => {
         (-x * SLOPE_LENGTH) / DENSITY + p2
       );
       temp.updateMatrix();
-      if (ref.current && ref2.current) {
+      if (ref.current && ref2.current && ref3.current && ref4.current) {
         ref.current.setMatrixAt(x, temp.matrix);
         ref2.current.setMatrixAt(x, temp.matrix);
+        ref3.current.setMatrixAt(x, temp.matrix);
+        ref4.current.setMatrixAt(x, temp.matrix);
       }
     }
-    if (ref.current && ref2.current) {
+    if (ref.current && ref2.current && ref3.current && ref4.current) {
       ref.current.instanceMatrix.needsUpdate = true;
       ref2.current.instanceMatrix.needsUpdate = true;
+      ref3.current.instanceMatrix.needsUpdate = true;
+      ref4.current.instanceMatrix.needsUpdate = true;
     }
   }, [DENSITY]);
 
   const ref = useRef<InstancedMesh>(null);
   const ref2 = useRef<InstancedMesh>(null);
+  const ref3 = useRef<InstancedMesh>(null);
+  const ref4 = useRef<InstancedMesh>(null);
   const group = useRef<Group>(null);
+  const group2 = useRef<Group>(null);
   useEffect(() => {
     if (
       gameLoopActive &&
       document.visibilityState === "visible" &&
-      group.current
+      group.current &&
+      group2.current
     ) {
-      const g = group.current;
-      g.position.z += delta * velocity;
-      g.position.y += delta * SLOPE_TAN * velocity;
-      if (g.position.z > SLOPE_LENGTH) {
-        g.position.z -= SLOPE_LENGTH * 2;
-        g.position.y -= SLOPE_LENGTH * 2 * SLOPE_TAN;
-      }
+      [group.current, group2.current].forEach(g => {
+        g.position.z += delta * velocity;
+        g.position.y += delta * SLOPE_TAN * velocity;
+        if (g.position.z > SLOPE_LENGTH) {
+          g.position.z -= SLOPE_LENGTH * 2;
+          g.position.y -= SLOPE_LENGTH * 2 * SLOPE_TAN;
+        }
+      });
     }
   }, [gameLoopActive, velocity, ticks, delta]);
   useEffect(() => {
     if (group.current) {
       group.current.position.set(...position);
     }
-  }, []);
+    if (group2.current) {
+      group2.current.position.set(
+        position[0],
+        position[1] + SLOPE_LENGTH * SLOPE_TAN,
+        position[2] + SLOPE_LENGTH
+      );
+    }
+  }, position);
   return (
-    <group position={position} ref={group}>
-      <instancedMesh
-        ref={ref}
-        args={[nodes.Mesh_treePine.geometry, materials.wood, DENSITY]}
-      />
-      <instancedMesh
-        ref={ref2}
-        args={[nodes.Mesh_treePine_1.geometry, materials.leaves, DENSITY]}
-      />
-    </group>
+    <>
+      <group ref={group}>
+        <instancedMesh
+          ref={ref}
+          args={[nodes.Mesh_treePine.geometry, materials.wood, DENSITY]}
+        />
+        <instancedMesh
+          ref={ref2}
+          args={[nodes.Mesh_treePine_1.geometry, materials.leaves, DENSITY]}
+        />
+      </group>
+      <group ref={group2}>
+        <instancedMesh
+          ref={ref3}
+          args={[nodes.Mesh_treePine.geometry, materials.wood, DENSITY]}
+        />
+        <instancedMesh
+          ref={ref4}
+          args={[nodes.Mesh_treePine_1.geometry, materials.leaves, DENSITY]}
+        />
+      </group>
+    </>
   );
 };
 

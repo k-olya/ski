@@ -35,6 +35,7 @@ export const Settings = () => {
     quizes,
     reverse,
     debris,
+    fastTrees,
     trampolines,
   } = settings;
 
@@ -84,6 +85,13 @@ export const Settings = () => {
         >
           {tutorMode ? "показывать зелеными флагами" : "не показывать"}
         </Checkbox>
+        {/* <h2 className="text-xl mt-2"></h2>
+        <Checkbox
+          checked={fastTrees}
+          onClick={() => dispatch(toggleSetting("fastTrees"))}
+        >
+          быстрые деревья
+        </Checkbox> */}
         <h2 className="text-xl mt-2 mb-1">Количество деревьев</h2>
         <div className="flex w-full justify-between items-center">
           <div>

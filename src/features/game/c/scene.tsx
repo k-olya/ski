@@ -46,7 +46,7 @@ export const Scene = () => {
     boost,
     trampolineEventTime,
     trampolineVelocity,
-    settings: { density },
+    settings: { fastTrees },
     start,
   } = useSelector(s => s.game);
   const { screen } = useSelector(s => s.ui);
@@ -132,19 +132,25 @@ export const Scene = () => {
           position={[-6.5, 1.15 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
         /> */}
 
-        {/* <Forest position={[-6.5, 1.35, 2]} />
-        <Forest
-          position={[-9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
-        />
-        <Forest position={[6.5, 1.35, 2]} />
-        <Forest
-          position={[9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
-      />*/}
-        <InstancedTree
-          position={[6.5, 1.35, 2]}
-          gameLoopActive={true}
-          density={density}
-        />
+        {fastTrees ? (
+          <>
+            <InstancedTree position={[8.5, 2.6, 2]} />
+            <InstancedTree position={[-8.5, 2.6, 2]} />
+          </>
+        ) : (
+          <>
+            <Forest position={[-6.5, 1.35, 2]} />
+            <Forest
+              position={[-9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
+            />
+            <Forest position={[6.5, 1.35, 2]} />
+            <Forest
+              position={[9.5, 2.65 - SLOPE_LENGTH * SLOPE_TAN, -SLOPE_LENGTH]}
+            />
+          </>
+        )}
+
+        {/*  */}
         <group
           rotation={[
             -SLOPE_ANGLE,
@@ -175,7 +181,7 @@ export const Scene = () => {
             ]}
           />
         </group>
-        <PointerLockControls selector="canvas" />
+        {/* <PointerLockControls selector="canvas" /> */}
       </group>
     </>
   );
