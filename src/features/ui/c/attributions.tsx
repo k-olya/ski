@@ -30,8 +30,7 @@ export const Attributions = () => {
         <h2 className="text-xl mt-8 md:mt-2">Дизайн и программирование</h2>
         <div className="mt-2 italic">
           <a
-            href="/"
-            target="_blank"
+            href="mailto:kolay.games@ya.ru"
             className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
           >
             <span className="mr-1">kolay</span>
