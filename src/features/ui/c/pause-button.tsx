@@ -13,7 +13,7 @@ export const PauseButton = () => {
   }, [dispatch]);
   return (
     <Button className="p-2 text-3xl cursor-pointer" onClick={cb}>
-      <IoSettingsSharp />
+      <IoPause className="transform scale-x-125" />
     </Button>
   );
 };
