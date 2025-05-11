@@ -1,6 +1,7 @@
 import { useLoader, useThree } from "@react-three/fiber";
 import { useSelector } from "app/hooks";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
+import { useEventListener } from "app/event-listener";
 import {
   AudioListener,
   AudioLoader,
@@ -50,6 +51,19 @@ export const Music = () => {
       }
     }
   }, [audio.current, muted, musicVolume]);
+
+  // pause music when tab is inactive
+  const doc = useRef(document);
+  const vfn = useCallback(() => {
+    if (doc.current.visibilityState === "hidden" && init.current && !muted) {
+      audio.current?.pause();
+    } else if (
+      doc.current.visibilityState === "visible" && init.current && !muted
+    ) {
+      audio.current?.play();
+    }
+  }, [audio.current, init.current, muted]);
+  useEventListener("visibilitychange", vfn, doc);
 
   return <></>; //<group ref={ref}></group>; //<positionalAudio ref={sound} args={[listener]} />;
 };

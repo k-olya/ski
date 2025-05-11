@@ -25,13 +25,13 @@ import { subtract } from "config/quiz/subtract";
 const QUIZES = { add, subtract, multiply };
 const QUIZ_A = Object.keys(QUIZES) as unknown[] as Quizes[];
 const QUIZ_KEYS = Object.fromEntries(
-  QUIZ_A.map(q => [q, Array.from(QUIZES[q].keys())])
+  QUIZ_A.map((q) => [q, Array.from(QUIZES[q].keys())]),
 );
 const REVERSE_QUIZES = Object.fromEntries(
-  QUIZ_A.map(q => [q, reverseMap(QUIZES[q])])
+  QUIZ_A.map((q) => [q, reverseMap(QUIZES[q])]),
 );
 const REVERSE_QUIZ_KEYS = Object.fromEntries(
-  QUIZ_A.map(q => [q, Array.from(REVERSE_QUIZES[q].keys())])
+  QUIZ_A.map((q) => [q, Array.from(REVERSE_QUIZES[q].keys())]),
 );
 type Quizes = "add" | "subtract" | "multiply";
 
@@ -170,7 +170,7 @@ const initialState: GameState = {
 export const flagHitTest = (
   flag: Flag,
   playerX: number,
-  w: number = 1.1
+  w: number = 1.1,
 ): boolean => {
   return (
     flag.z > 0 &&
@@ -188,14 +188,14 @@ const CONTROL_MAP: Record<string, string[]> = {
 export const kbToControls = (kb: KbState): KbState => {
   const r: KbState = {};
   for (let x in CONTROL_MAP) {
-    r[x] = CONTROL_MAP[x].map(y => kb[y]).some(z => z);
+    r[x] = CONTROL_MAP[x].map((y) => kb[y]).some((z) => z);
   }
   return r;
 };
 
 export const isCorrectFlag = (
   activeQuestion: [string, string | string[]],
-  hitFlag: Flag
+  hitFlag: Flag,
 ): boolean => {
   if ([activeQuestion[1], hitFlag.text].includes("СТАРТ")) {
     return true;
@@ -203,15 +203,15 @@ export const isCorrectFlag = (
   // fill in every possible answer to avoid confusion
   const question: [string, string[]] = [
     activeQuestion[0],
-    QUIZ_A.flatMap(q =>
+    QUIZ_A.flatMap((q) =>
       [QUIZES[q].get(activeQuestion[0]) || ""]
         .concat(REVERSE_QUIZES[q].get(activeQuestion[0]) || [])
         .concat(
           // 2 * 2 === 2 + 2
           typeof activeQuestion[1] === "string"
             ? REVERSE_QUIZES[q].get(activeQuestion[1]) || []
-            : []
-        )
+            : [],
+        ),
     ),
   ];
   return question[1].includes(hitFlag.text || "");
@@ -221,13 +221,18 @@ export const slice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    startGame: state => {
+    startGame: (state) => {
       console.log("starting game");
       state.start = Date.now();
       state.distance = 0;
       state.gameState = "playing";
       state.gameLoopActive = true;
       slice.caseReducers.genQuestion(state);
+      // @ts-ignore
+      if (window.ysdk) {
+        // @ts-ignore
+        window.ysdk.features.GameplayAPI.start();
+      }
     },
     toggleSetting: (
       state,
@@ -235,7 +240,7 @@ export const slice = createSlice({
         payload,
       }: PayloadAction<
         "tutor-mode" | "reverse" | "trampolines" | "debris" | "fastTrees"
-      >
+      >,
     ) => {
       state.settings[payload] = !state.settings[payload];
     },
@@ -243,7 +248,7 @@ export const slice = createSlice({
       state.settings.quizes[payload] = !state.settings.quizes[payload];
 
       // prevent having an empty list
-      if (QUIZ_A.every(q => !state.settings.quizes[q])) {
+      if (QUIZ_A.every((q) => !state.settings.quizes[q])) {
         state.settings.quizes[payload] = true;
       }
     },
@@ -251,13 +256,13 @@ export const slice = createSlice({
       state,
       {
         payload: { setting, value },
-      }: PayloadAction<{ setting: "density" | "v"; value: number }>
+      }: PayloadAction<{ setting: "density" | "v"; value: number }>,
     ) => {
       state.settings[setting] = value;
     },
-    genQuestion: state => {
+    genQuestion: (state) => {
       const activeSets = QUIZ_A.filter(
-        x => state.settings.quizes[x as unknown as Quizes]
+        (x) => state.settings.quizes[x as unknown as Quizes],
       );
       state.activeQuiz = activeSets[irand(activeSets.length)];
       state.activeReverse = state.settings.reverse && Boolean(irand(2));
@@ -272,7 +277,7 @@ export const slice = createSlice({
         key = quiz_keys[irand(quiz_keys.length)];
       }
       state.activeQuestion = [key, quiz.get(key) || ""];
-      state.flags = state.flags.map(flag => {
+      state.flags = state.flags.map((flag) => {
         if (flag.z < -SLOPE_LENGTH / 5) {
           let text = "";
           const correct = irand(100) < CORRECT_PERCENT;
@@ -293,19 +298,29 @@ export const slice = createSlice({
         } else return flag;
       });
     },
-    pause: state => {
+    pause: (state) => {
       state.gameLoopActive = false;
+      // @ts-ignore
+      if (window.ysdk) {
+        // @ts-ignore
+        window.ysdk.features.GameplayAPI.stop();
+      }
     },
-    unpause: state => {
+    unpause: (state) => {
       state.gameLoopActive = true;
+      // @ts-ignore
+      if (window.ysdk) {
+        // @ts-ignore
+        window.ysdk.features.GameplayAPI.start();
+      }
     },
-    reset: state => initialState,
+    reset: (state) => initialState,
     setSteeringWheelPosition: (state, { payload }: PayloadAction<number>) => {
       state.steeringWheelPosition = payload;
     },
     tick: (
       state,
-      { payload }: PayloadAction<{ delta: number; kb: KbState }>
+      { payload }: PayloadAction<{ delta: number; kb: KbState }>,
     ) => {
       if (state.gameLoopActive) {
         const { delta, kb } = payload;
@@ -317,7 +332,7 @@ export const slice = createSlice({
               delta *
               (Number(controls.ArrowUp || 0) - Number(controls.ArrowDown || 0)),
           -1,
-          1
+          1,
         );
         if (!controls.ArrowUp && !controls.ArrowDown) {
           state.boost *= 0.9;
@@ -332,20 +347,20 @@ export const slice = createSlice({
         const Vmax = Math.max(
           state.settings.v *
             (controls.ArrowUp ? Vboost : controls.ArrowDown ? Vslow : V),
-          state.velocity - delta * a * state.settings.v
+          state.velocity - delta * a * state.settings.v,
         );
         state.velocity = clamp(
           state.velocity + delta * a * state.settings.v,
           0,
-          Vmax
+          Vmax,
         );
         state.ticks++;
         const extraPosition = sqrt(
           clamp(
             ((abs(state.playerX) - SLOPE_WIDTH / 2) / EXTRA_PLAYER_PADDING) * 2,
             0.0,
-            0.65
-          )
+            0.65,
+          ),
         );
         const sign = state.playerX / abs(state.playerX) || 0;
         const gravity = extraPosition
@@ -363,7 +378,7 @@ export const slice = createSlice({
                   Number(controls.ArrowRight || 0))) *
               state.settings.v,
           -(SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2,
-          (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2
+          (SLOPE_WIDTH + EXTRA_PLAYER_PADDING) / 2,
         );
         state.Xvelocity = (state.playerX - lastX) / delta;
         state.steering = clamp(
@@ -373,7 +388,7 @@ export const slice = createSlice({
               delta *
               3,
           -1,
-          1
+          1,
         );
         if (!controls.ArrowLeft && !controls.ArrowRight) {
           state.steering *= 0.8;
@@ -381,8 +396,8 @@ export const slice = createSlice({
         }
 
         // flags
-        const hitFlag = state.flags.find(flag =>
-          flagHitTest(flag, state.playerX)
+        const hitFlag = state.flags.find((flag) =>
+          flagHitTest(flag, state.playerX),
         );
         if (hitFlag) {
           if (isCorrectFlag(state.activeQuestion, hitFlag)) {
@@ -392,7 +407,7 @@ export const slice = createSlice({
               // where we count score
               state.inARow++;
               const activeSets = QUIZ_A.filter(
-                x => state.settings.quizes[x as unknown as Quizes]
+                (x) => state.settings.quizes[x as unknown as Quizes],
               ).length;
               state.score +=
                 SCORE_MULTIPLIER *
@@ -406,7 +421,7 @@ export const slice = createSlice({
             state.shakes++;
           }
         }
-        state.flags = state.flags.map(flag => {
+        state.flags = state.flags.map((flag) => {
           if (flag.z > 0) {
             if (
               !hitFlag &&
@@ -455,8 +470,8 @@ export const slice = createSlice({
           ((TRAMPOLINE_TIME * state.velocity) / V);
         const flying = clamp(trampolineT) === trampolineT;
         // debris
-        const hitDebris = state.debris.find(d =>
-          flagHitTest(d, state.playerX, 0.4)
+        const hitDebris = state.debris.find((d) =>
+          flagHitTest(d, state.playerX, 0.4),
         );
         if (hitDebris && !flying && state.settings.debris) {
           if (state.gameState === "playing") {
@@ -467,7 +482,7 @@ export const slice = createSlice({
           state.inARow = 0;
           state.score = 0;
         }
-        state.debris = state.debris.map(d => {
+        state.debris = state.debris.map((d) => {
           if (d.z > 0) {
             const dx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
             return {
@@ -479,14 +494,14 @@ export const slice = createSlice({
         });
 
         // trampolines
-        const hitTrampoline = state.trampolines.find(d =>
-          flagHitTest(d, state.playerX, 1.25)
+        const hitTrampoline = state.trampolines.find((d) =>
+          flagHitTest(d, state.playerX, 1.25),
         );
         if (hitTrampoline && !flying && state.settings.trampolines) {
           state.trampolineVelocity = state.velocity;
           state.trampolineEventTime = Date.now();
         }
-        state.trampolines = state.trampolines.map(d => {
+        state.trampolines = state.trampolines.map((d) => {
           if (d.z > 0) {
             const dx = rand(-SLOPE_WIDTH / 2, SLOPE_WIDTH / 2);
             return { x: dx, z: -SLOPE_LENGTH };
