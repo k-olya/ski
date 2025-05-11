@@ -63,13 +63,7 @@ export const Scene = () => {
 
   useThree(({ camera }) => {
     if (!init.current) {
-      // call yandex sdk ready()
-      // @ts-ignore
-      if (window.ysdk) {
-        // @ts-ignore
-        window.ysdk.features.LoadingAPI.ready();
-      }
-    // set camera
+      // set camera
       init.current = true;
       camera.near = 0.01;
       camera.far = 1000;

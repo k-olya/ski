@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "app/hooks";
 import { UiScreen, setScreen } from "./slice";
 import { Main } from "./c/main";
@@ -21,6 +21,19 @@ export function Ui() {
   const { screen } = useSelector((s) => s.ui);
   const { gameState } = useSelector((s) => s.game);
   const kb = useSelector((s) => s.kb);
+
+  // call yandex sdk ready() when loading is finished
+  const init = useRef(false);
+  useEffect(() => {
+    if (!init.current && loaded && loaded === total) {
+      // @ts-ignore
+      if (window.ysdk) {
+        // @ts-ignore
+        window.ysdk.features.LoadingAPI.ready();
+      }
+      init.current = true;
+    }
+  }, [init.current, loaded, total]);
 
   useEffect(() => {
     if (kb.Escape) {
