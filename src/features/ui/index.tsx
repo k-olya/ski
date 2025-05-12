@@ -7,6 +7,7 @@ import { Settings } from "./c/settings";
 import { pause, unpause } from "features/game/slice";
 import { Attributions } from "./c/attributions";
 import { useProgress } from "@react-three/drei";
+import {LoadingScreen} from "./c/loading-screen";
 
 const components: Partial<Record<UiScreen, FC>> = {
   main: Main,
@@ -22,19 +23,6 @@ export function Ui() {
   const { gameState } = useSelector((s) => s.game);
   const kb = useSelector((s) => s.kb);
 
-  // call yandex sdk ready() when loading is finished
-  const init = useRef(false);
-  useEffect(() => {
-    if (!init.current && loaded && loaded === total) {
-      // @ts-ignore
-      if (window.ysdk) {
-        // @ts-ignore
-        window.ysdk.features.LoadingAPI.ready();
-      }
-      init.current = true;
-    }
-  }, [init.current, loaded, total]);
-
   useEffect(() => {
     if (kb.Escape) {
       if (screen !== "settings") {
@@ -49,5 +37,5 @@ export function Ui() {
 
   const C = components[screen];
   if (loaded && loaded === total && C) return <C />;
-  return null;
+  return <LoadingScreen />;
 }

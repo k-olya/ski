@@ -11,13 +11,27 @@ import "./index.css";
 const container = document.getElementById("root")!;
 const root = createRoot(container);
 
-root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
-);
+// @ts-ignore
+if (window.YaGames) {
+  // @ts-ignore
+  window.YaGames.init().then(ysdk => {
+      console.log('Yandex SDK initialized');
+      // @ts-ignore
+      window.ysdk = ysdk;
+      // @ts-ignore
+      window.ysdk.features.LoadingAPI.ready();
+      // @ts-ignore
+      console.log("Detected language: ", window.ysdk.environment.i18n.lang);
+      root.render(
+        <React.StrictMode>
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </React.StrictMode>
+      );
+
+  });
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

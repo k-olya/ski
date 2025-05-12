@@ -34,98 +34,90 @@ export const Attributions = () => {
             <h2 className="text-xl mt-8 md:mt-2">Дизайн и программирование</h2>
             <div className="mt-2 italic">
               <a
-                href="mailto:kolay.games@ya.ru"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                // href="mailto:kolay.games@ya.ru"
+                className="flex items-center opacity-80"
               >
-                <span className="mr-1">kolay</span>
+                <span className="mr-1">kolyounya</span>
                 <GiHollowCat className="transform scale-110" />
               </a>
             </div>
             <h2 className="text-xl mt-8">Деревья и трамплины</h2>
             <div className="mt-2 italic">
               <a
-                href="https://kenney.nl/"
+                // href="https://kenney.nl/"
                 target="_blank"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                className="flex items-center opacity-80"
               >
-                <span className="mr-1">kenney.nl</span>
-                <IoEarth />
+                <span className="mr-1">kenney</span>
               </a>
             </div>
             <h2 className="text-xl mt-8">Скайбокс</h2>
             <div className="mt-2 italic">
               <a
-                href="mailto:jacobwindecker@hotmail.com"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                // href="mailto:jacobwindecker@hotmail.com"
+                className="flex items-center opacity-80"
               >
-                <span className="mr-1">jacobwindecker@hotmail.com</span>
-                <IoEarth />
+                <span className="mr-1">jacobwindecker</span>
               </a>
             </div>
             <h2 className="text-xl mt-8">Модель лыжи</h2>
             <div className="mt-2 italic">
               <a
-                href="https://sketchfab.com/grimren13"
+                // href="https://sketchfab.com/grimren13"
                 target="_blank"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                className="flex items-center opacity-80"
               >
                 <span className="mr-1">grimren13</span>
-                <IoEarth />
               </a>
             </div>
             <h2 className="text-xl mt-8">Звукорежиссер</h2>
             <div className="mt-2 italic">
               <a
-                href="https://soundcloud.com/jahlib"
+                // href="https://soundcloud.com/jahlib"
                 target="_blank"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                className="flex items-center opacity-80"
               >
                 <span className="mr-1">jahlib</span>
-                <IoEarth />
               </a>
             </div>
             <h2 className="text-xl mt-8">Музыкальная тема</h2>
             <div className="mt-2 italic">
               <a
-                href="https://pixabay.com/users/evgeny_bardyuzha-25235210"
+                // href="https://pixabay.com/users/evgeny_bardyuzha-25235210"
                 target="_blank"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                className="flex items-center opacity-80"
               >
                 <span className="mr-1 text-center">
                   Evgeny Bardyuzha - Password Infinity
                 </span>
-                <IoEarth />
               </a>
             </div>
             <h2 className="text-xl mt-8">Иконки</h2>
             <div className="mt-2 mb-0 italic">
               <a
-                href="https://ionic.io/ionicons/"
+                // href="https://ionic.io/ionicons/"
                 target="_blank"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                className="flex items-center opacity-80"
               >
                 <span className="mr-1">ionicons</span>
-                <IoEarth />
               </a>
             </div>
             <div className="mt-1 italic">
               <a
-                href="https://game-icons.net/"
+                // href="https://game-icons.net/"
                 target="_blank"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                className="flex items-center opacity-80"
               >
                 <span className="mr-1">game-icons</span>
-                <IoEarth />
               </a>
             </div>
             <div className="mt-1 italic">
               <a
-                href="https://github.com/tailwindlabs/heroicons"
+                // href="https://github.com/tailwindlabs/heroicons"
                 target="_blank"
-                className="flex items-center opacity-80 hover:opacity-100 transition-opacity"
+                className="flex items-center opacity-80"
               >
                 <span className="mr-1">heroicons 2</span>
-                <IoEarth />
               </a>
             </div>
             <div className="mt-16 md:mt-auto mb-8 italic">

@@ -17,7 +17,7 @@ import { mute, setUserInteracted } from "features/sound/slice";
 export const FullscreenButton = () => {
   const fullscreen = window.document.fullscreenElement;
   // @ts-ignore
-  const hide = !window.ysdk;
+  const hide = !!window.ysdk;
   if (hide) return null;
   return (
     <Button
