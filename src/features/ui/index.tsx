@@ -23,6 +23,19 @@ export function Ui() {
   const { gameState } = useSelector((s) => s.game);
   const kb = useSelector((s) => s.kb);
 
+  // call ygames ready()
+  const init = useRef(false);
+  useEffect(() => {
+    // @ts-ignore
+    if (!init.current && loaded && loaded === total && window.ysdk) {
+      init.current = true;
+      // @ts-ignore
+      window.ysdk.features.LoadingAPI.ready();
+      // @ts-ignore
+      console.log("Detected language: ", window.ysdk.environment.i18n.lang);
+    }
+  }, [init.current, loaded, total]);
+
   useEffect(() => {
     if (kb.Escape) {
       if (screen !== "settings") {

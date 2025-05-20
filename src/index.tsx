@@ -18,10 +18,6 @@ if (window.YaGames) {
       console.log('Yandex SDK initialized');
       // @ts-ignore
       window.ysdk = ysdk;
-      // @ts-ignore
-      window.ysdk.features.LoadingAPI.ready();
-      // @ts-ignore
-      console.log("Detected language: ", window.ysdk.environment.i18n.lang);
       root.render(
         <React.StrictMode>
           <Provider store={store}>
